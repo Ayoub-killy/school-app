@@ -1,0 +1,397 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School App — Empowering Education</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <style>
+    html { scroll-behavior: smooth; }
+        body {
+            overflow-x: hidden; overflow-y: auto !important; margin: 0;
+            display: block !important; height: auto !important; min-height: 0 !important;
+            font-family: 'Poppins', sans-serif;
+        }
+        .top-nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+            padding: 14px 0; transition: background 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease;
+        }
+        .top-nav.scrolled {
+            background: rgba(255,255,255,0.97); box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 10px 0;
+        }
+        .top-nav .nav-link { color: #fff; font-weight: 500; transition: color 0.2s; }
+        .top-nav.scrolled .nav-link { color: #212529; }
+        .top-nav .brand-text { color: #fff; font-weight: 700; font-size: 1.3rem; transition: color 0.2s; }
+        .top-nav.scrolled .brand-text { color: #212529; }
+        .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal.is-visible { opacity: 1; transform: translateY(0); }
+        .stat-num { font-size: 2.6rem; font-weight: 800; }
+        .btn-gradient {
+            background: linear-gradient(120deg, #11998e, #2575fc); color: #fff; border: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-gradient:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,117,252,0.35); color: #fff; }
+        .hero-wrap {
+            position: relative;
+            min-height: 600px;
+            overflow: hidden;
+        }
+        @media (min-width: 992px) {
+            .hero-wrap { height: 100vh; }
+        }
+        .hero-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 1;
+        }
+        .hero-bg, .carousel-inner, .carousel-item {
+            height: 100%;
+        }
+        .hero-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.45);
+        }
+        .hero-content {
+            position: relative;
+            min-height: 600px;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(120deg, rgba(17,153,142,0.55), rgba(37,117,252,0.55));
+            padding-top: 100px;
+            padding-bottom: 40px;
+        }
+        @media (min-width: 992px) {
+            .hero-content { height: 100%; min-height: 0; padding-top: 0; padding-bottom: 0; }
+        }
+        .fade-in-up { animation: fadeUpIn 0.9s ease both; }
+        .fade-in-up.delay-1 { animation-delay: 0.2s; }
+        .fade-in-up.delay-2 { animation-delay: 0.4s; }
+        .login-card {
+            backdrop-filter: blur(6px);
+            background: rgba(255,255,255,0.97);
+        }
+        .aim-icon {
+            width: 56px; height: 56px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+        }
+        .scroll-cue {
+            position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+            animation: bounce 1.8s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, -10px); }
+        }
+        @media (max-width: 767px) {
+            .stat-num { font-size: 1.9rem; }
+            .hero-content h1 { font-size: 2rem; }
+            .hero-content .fs-4 { font-size: 1.1rem !important; }
+            .hero-content .fs-5 { font-size: 1rem !important; }
+            .login-card { margin-top: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="top-nav" id="topNav">
+    <div class="container d-flex justify-content-between align-items-center">
+        <span class="brand-text"><i class="bi bi-mortarboard-fill me-2"></i>School App</span>
+        <div class="d-none d-md-flex align-items-center gap-4">
+            <a href="#about" class="nav-link">About</a>
+            <a href="#terms" class="nav-link">Terms</a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO SECTION -->
+<div class="hero-wrap">
+    <div id="heroCarousel" class="carousel slide carousel-fade hero-bg" data-bs-ride="carousel" data-bs-interval="4000">
+        <div class="carousel-inner h-100">
+            <div class="carousel-item active h-100">
+                <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1600&q=80" class="hero-img" alt="Students in classroom">
+            </div>
+            <div class="carousel-item h-100">
+                <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1600&q=80" class="hero-img" alt="Library shelves">
+            </div>
+            <div class="carousel-item h-100">
+                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1600&q=80" class="hero-img" alt="Students studying together">
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-content">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-7 text-white mb-4 mb-lg-0">
+                    <h1 class="display-4 fw-bold mb-3">School App</h1>
+                    <p class="fs-4 mb-2">One platform for your entire school.</p>
+                    <p class="fs-5 opacity-75">
+                        Manage students, staff, academics, finance, inventory, and the library —
+                        all in one secure, responsive system built for modern schools.
+                    </p>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="card login-card shadow-lg border-0 rounded-4">
+                        <div class="card-body p-4 p-md-5">
+                                                        {% if request.COOKIES.returning_user %}
+                                <h3 class="fw-bold text-center mb-1">Welcome Back to Login</h3>
+                            {% else %}
+                                <h3 class="fw-bold text-center mb-1">Welcome, School Login</h3>
+                            {% endif %}
+                            <p class="text-muted text-center mb-4">Sign in to your account</p>
+                                                        {% if form.errors %}
+                                <div class="alert alert-danger">
+                                    {% if form.non_field_errors %}
+                                        {{ form.non_field_errors.0 }}
+                                    {% else %}
+                                        Invalid email or password. Please try again.
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                            <form method="post" action="{% url 'accounts:login' %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    {{ form.username }}
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Password</label>
+                                    <div class="input-group">
+                                        {{ form.password }}
+                                        <button class="btn btn-outline-secondary toggle-password" type="button" data-target="id_password">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Login as</label>
+                                    {{ form.role }}
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">Log In</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- LIVE STATS BAR -->
+<div class="py-5 text-white" style="background: linear-gradient(120deg, #11998e, #2575fc);">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-6 col-md-3 reveal">
+                <div class="stat-num" data-count="{{ stat_students }}">0</div>
+                <div class="opacity-75">Active Students</div>
+            </div>
+            <div class="col-6 col-md-3 reveal">
+                <div class="stat-num" data-count="{{ stat_staff }}">0</div>
+                <div class="opacity-75">Staff Members</div>
+            </div>
+            <div class="col-6 col-md-3 reveal">
+                <div class="stat-num" data-count="{{ stat_classes }}">0</div>
+                <div class="opacity-75">Classes</div>
+            </div>
+            <div class="col-6 col-md-3 reveal">
+                <div class="stat-num" data-count="{{ stat_books }}">0</div>
+                <div class="opacity-75">Library Books</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ABOUT / AIMS SECTION -->
+<div class="container py-5" id="about">
+    <div class="text-center mb-5 reveal">
+        <h2 class="fw-bold">What School App Does</h2>
+        <p class="text-muted fs-5">A complete digital foundation for running your school efficiently.</p>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4 fade-in-up delay-1">
+            <div class="text-center p-4 h-100 border rounded-4 shadow-sm">
+                <div class="aim-icon bg-primary bg-opacity-10 text-primary mx-auto mb-3"><i class="bi bi-mortarboard-fill"></i></div>
+                <h5 class="fw-bold">School Information System</h5>
+                <p class="text-muted mb-0">Students, staff, guardians, classes, streams, and academic records — all organized and always up to date.</p>
+            </div>
+        </div>
+        <div class="col-md-4 fade-in-up delay-2">
+            <div class="text-center p-4 h-100 border rounded-4 shadow-sm">
+                <div class="aim-icon bg-success bg-opacity-10 text-success mx-auto mb-3"><i class="bi bi-cash-coin"></i></div>
+                <h5 class="fw-bold">Resource Management</h5>
+                <p class="text-muted mb-0">Fee invoicing, income and expense tracking, and inventory — automated, accurate, and transparent.</p>
+            </div>
+        </div>
+        <div class="col-md-4 fade-in-up delay-3">
+            <div class="text-center p-4 h-100 border rounded-4 shadow-sm">
+                <div class="aim-icon bg-warning bg-opacity-10 text-warning mx-auto mb-3"><i class="bi bi-book-half"></i></div>
+                <h5 class="fw-bold">School Library</h5>
+                <p class="text-muted mb-0">Track books, members, and loans with a simple, reliable system built for busy librarians.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row align-items-center g-5 mb-5">
+        <div class="col-md-6 fade-in-up">
+            <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=900&q=80"
+                 class="img-fluid rounded-4 shadow-sm" alt="Teacher helping students">
+        </div>
+        <div class="col-md-6 fade-in-up delay-1">
+            <h3 class="fw-bold mb-3">Our Aim</h3>
+            <p class="text-muted fs-5">
+                School App exists to reduce the paperwork and guesswork in running a school, so that
+                administrators, teachers, and staff can focus on what matters most — the students.
+                Every record, from a single fee payment to a full academic year, is accurate,
+                searchable, and available the moment you need it.
+            </p>
+            <ul class="list-unstyled mt-3">
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Reduce manual, repetitive record-keeping</li>
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Give every role exactly the tools they need</li>
+                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Keep school data secure and organized</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- TERMS OF USE -->
+<div class="bg-light py-5" id="terms">
+    <div class="container">
+        <div class="text-center mb-4 fade-in-up">
+            <h2 class="fw-bold">Terms of Use</h2>
+            <p class="text-muted">Please review before using the system.</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8 fade-in-up delay-1">
+                <div class="accordion" id="termsAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#term1">
+                                1. Authorized Use Only
+                            </button>
+                        </h2>
+                        <div id="term1" class="accordion-collapse collapse show" data-bs-parent="#termsAccordion">
+                            <div class="accordion-body">
+                                Access to this system is limited to authorized staff, students, and guardians of the school.
+                                Accounts are personal and must not be shared. Each user is responsible for keeping their
+                                login credentials confidential.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#term2">
+                                2. Data Accuracy &amp; Responsibility
+                            </button>
+                        </h2>
+                        <div id="term2" class="accordion-collapse collapse" data-bs-parent="#termsAccordion">
+                            <div class="accordion-body">
+                                Users are responsible for the accuracy of the information they enter, including student
+                                records, financial transactions, and inventory data. The school reserves the right to
+                                review and correct records as needed.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#term3">
+                                3. Privacy &amp; Confidentiality
+                            </button>
+                        </h2>
+                        <div id="term3" class="accordion-collapse collapse" data-bs-parent="#termsAccordion">
+                            <div class="accordion-body">
+                                Student, staff, and financial information stored in this system is confidential.
+                                It may only be accessed and used for legitimate school purposes, and must not be
+                                shared outside the school without proper authorization.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#term4">
+                                4. System Availability
+                            </button>
+                        </h2>
+                        <div id="term4" class="accordion-collapse collapse" data-bs-parent="#termsAccordion">
+                            <div class="accordion-body">
+                                While every effort is made to keep the system available and data safe, the school does
+                                not guarantee uninterrupted access and recommends regular review of critical records.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="bg-dark text-white text-center py-4">
+    <p class="mb-0">&copy; {% now "Y" %} School App. All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/custom.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.toggle-password').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const input = document.getElementById(button.dataset.target);
+            const icon = button.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
+        });
+    });
+
+    // Nav bar background on scroll
+    const nav = document.getElementById('topNav');
+    window.addEventListener('scroll', function () {
+        nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // Scroll-reveal animation
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry, i) {
+            if (entry.isIntersecting) {
+                setTimeout(function () {
+                    entry.target.classList.add('is-visible');
+                }, i * 80);
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+    revealEls.forEach(function (el) { revealObserver.observe(el); });
+
+        // Animated number counters — runs immediately on page load, no scrolling required
+    document.querySelectorAll('.stat-num').forEach(function (el) {
+        const target = parseInt(el.dataset.count, 10) || 0;
+        let current = 0;
+        const step = Math.max(1, Math.ceil(target / 60));
+        const timer = setInterval(function () {
+            current += step;
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+            el.textContent = current;
+        }, 20);
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Terms - School App{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Terms</h3>
+    <a href="{% url 'sis:term_create' %}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Add Term</a>
+</div>
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light"><tr><th>Term</th><th>Semester</th><th>Start</th><th>End</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for t in terms %}
+                <tr>
+                    <td>{{ t.get_name_display }}</td>
+                    <td>{{ t.semester }}</td>
+                    <td>{{ t.start_date }}</td>
+                    <td>{{ t.end_date }}</td>
+                    <td><span class="badge text-bg-{% if t.is_active %}success{% else %}secondary{% endif %}">{% if t.is_active %}Active{% else %}Inactive{% endif %}</span></td>
+                    <td>
+                        <a href="{% url 'sis:term_update' t.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                        <a href="{% url 'sis:term_delete' t.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center text-muted py-4">No terms yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

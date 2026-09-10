@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Inventory - {{ department.name }} - School App{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white"><i class="bi bi-box-seam me-1"></i> Record Inventory Item</div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3"><label class="form-label">Item Name</label>{{ form.item_name }}</div>
+                    <div class="mb-3"><label class="form-label">Status</label>{{ form.status }}</div>
+                    <div class="mb-3"><label class="form-label">Quantity</label>{{ form.quantity }}</div>
+                    <div class="mb-3"><label class="form-label">Notes</label>{{ form.notes }}</div>
+                    <div class="mb-3"><label class="form-label">Date</label>{{ form.date }}</div>
+                    <div class="mb-3"><label class="form-label">Time</label>{{ form.time }}</div>
+                    <button type="submit" class="btn btn-primary">Save Record</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">Inventory Records</div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light"><tr><th>Item</th><th>Status</th><th>Qty</th><th>Date/Time</th></tr></thead>
+                    <tbody>
+                        {% for r in records %}
+                        <tr>
+                            <td>{{ r.item_name }}</td>
+                            <td>
+                                <span class="badge text-bg-{% if r.status == 'PRESENT' %}success{% elif r.status == 'MISSING' %}danger{% else %}warning{% endif %}">
+                                    {{ r.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ r.quantity }}</td>
+                            <td>{{ r.date }} {{ r.time }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center text-muted py-4">No records yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

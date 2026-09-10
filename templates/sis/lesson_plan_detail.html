@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}{{ plan }} - School App{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-0">{{ plan.subject }} — {{ plan.stream }}</h3>
+        <span class="text-muted">{{ plan.start_date }} to {{ plan.end_date }}</span>
+    </div>
+    <a href="{% url 'sis:lesson_plan_delete' plan.pk %}" class="btn btn-outline-danger btn-sm">
+        <i class="bi bi-trash"></i> Delete Plan
+    </a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h6>Overall Progress: {{ plan.progress_percent }}% ({{ plan.taught_subtopics }} / {{ plan.total_subtopics }} subtopics taught)</h6>
+        <canvas id="progressChart" height="80"></canvas>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white">Add Topic</div>
+    <div class="card-body">
+        <form method="post" action="{% url 'sis:topic_add' plan.pk %}" class="row g-2 align-items-end">
+            {% csrf_token %}
+            <div class="col">
+                <label class="form-label">Title</label>
+                {{ topic_form.title }}
+            </div>
+            <div class="col-auto">
+                <label class="form-label">Order</label>
+                {{ topic_form.order }}
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Add Topic</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% for topic in topics %}
+<div class="card shadow-sm mb-3">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <span class="fw-bold">{{ topic.title }}</span>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge text-bg-success">{{ topic.progress_percent }}%</span>
+            <a href="{% url 'sis:topic_delete' topic.pk %}" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash"></i>
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <ul class="list-group mb-3">
+            {% for subtopic in topic.subtopics.all %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <form method="post" action="{% url 'sis:subtopic_toggle' subtopic.pk %}" class="d-flex align-items-center gap-2 mb-0">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm {% if subtopic.is_taught %}btn-success{% else %}btn-outline-secondary{% endif %}">
+                        <i class="bi bi-{% if subtopic.is_taught %}check-circle-fill{% else %}circle{% endif %}"></i>
+                    </button>
+                    <span class="{% if subtopic.is_taught %}text-decoration-line-through text-muted{% endif %}">
+                        {{ subtopic.title }}
+                    </span>
+                </form>
+                <a href="{% url 'sis:subtopic_delete' subtopic.pk %}" class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </li>
+            {% empty %}
+            <li class="list-group-item text-muted text-center">No subtopics yet.</li>
+            {% endfor %}
+        </ul>
+        <form method="post" action="{% url 'sis:subtopic_add' topic.pk %}" class="row g-2 align-items-end">
+            {% csrf_token %}
+            <div class="col">
+                {{ subtopic_form.title }}
+            </div>
+            <div class="col-auto">
+                {{ subtopic_form.order }}
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-primary btn-sm">Add Subtopic</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% empty %}
+<div class="card shadow-sm">
+    <div class="card-body text-center text-muted py-5">No topics added yet. Start by adding one above.</div>
+</div>
+{% endfor %}
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const labels = {{ chart_labels_json|safe }};
+    const progress = {{ chart_progress_json|safe }};
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Progress %',
+                data: progress,
+                backgroundColor: progress.map(p => p >= 100 ? '#198754' : p >= 50 ? '#ffc107' : '#dc3545'),
+            }],
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { x: { beginAtZero: true, max: 100 } },
+        },
+    });
+});
+</script>
+{% endblock %}

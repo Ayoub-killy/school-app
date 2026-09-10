@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}{{ book.title }} - School App{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-5">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header"><h5 class="mb-0">{{ book.title }}</h5></div>
+            <div class="card-body">
+                <p><strong>Author:</strong> {{ book.author|default:"—" }}</p>
+                <p><strong>ISBN:</strong> {{ book.isbn|default:"—" }}</p>
+                <p><strong>Category:</strong> {{ book.category|default:"—" }}</p>
+                <p><strong>Total Copies:</strong> {{ book.total_copies }}</p>
+                <p><strong>Available:</strong> {{ book.available_copies }}</p>
+            </div>
+        </div>
+                <div class="card shadow-sm">
+            <div class="card-header">Add Copies</div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Number of New Copies</label>
+                        {{ form.quantity }}
+                        <small class="text-muted d-block mt-1">
+                            Copies will be numbered automatically, continuing from the last existing copy.
+                        </small>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-plus-circle me-1"></i> Generate Copies</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card shadow-sm">
+            <div class="card-header">Copies</div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light"><tr><th>Copy #</th><th>Status</th><th></th></tr></thead>
+                    <tbody>
+                        {% for copy in copies %}
+                        <tr>
+                            <td>{{ copy.copy_number }}</td>
+                            <td><span class="badge text-bg-{% if copy.status == 'AVAILABLE' %}success{% elif copy.status == 'BORROWED' %}warning{% else %}danger{% endif %}">{{ copy.get_status_display }}</span></td>
+                            <td>
+                                <form method="post" action="{% url 'library:copy_delete' copy.pk %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="text-center text-muted py-4">No copies yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

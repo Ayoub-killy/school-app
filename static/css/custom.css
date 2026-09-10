@@ -1,0 +1,210 @@
+#sidebarOffcanvas .nav-link {
+    border-radius: 8px;
+    padding: 10px 14px;
+    transition: background-color 0.15s ease;
+}
+
+#sidebarOffcanvas .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+#sidebarOffcanvas .nav-link.active {
+    background-color: var(--bs-primary);
+    color: white !important;
+}
+
+.card {
+    border-radius: 10px;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.15s ease;
+}
+/* ===== Mobile Responsiveness Pass ===== */
+
+/* Reduce excessive padding on small screens */
+@media (max-width: 576px) {
+    main.flex-grow-1,
+    main.container-fluid {
+        padding: 1rem !important;
+    }
+
+    /* Shrink oversized stat-card numbers on phones */
+    .display-6 {
+        font-size: 1.5rem;
+    }
+
+    /* Stack action buttons (Edit/Delete/etc.) instead of squeezing them */
+    td .btn-sm {
+        margin-bottom: 4px;
+    }
+
+    /* Make card headers/titles a bit more compact */
+    .card-header h4,
+    .card-header h5 {
+        font-size: 1.1rem;
+    }
+
+    /* Ensure page titles don't overflow next to buttons */
+    .d-flex.justify-content-between {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}
+
+/* Action button groups: wrap instead of overflowing on any small screen */
+td .btn {
+    white-space: nowrap;
+}
+
+/* Ensure tables never force horizontal scroll on the whole page - only within their own container */
+.table-responsive {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Touch-friendly form inputs (Bootstrap defaults are already decent, this reinforces min height) */
+.form-control,
+.form-select {
+    min-height: 44px;
+}
+
+/* Prevent navbar username text from pushing the layout on very small screens */
+@media (max-width: 400px) {
+    .navbar-text {
+        display: none !important;
+    }
+}
+/* Prevent any element from causing horizontal overflow on mobile */
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+.container-fluid,
+main.flex-grow-1 {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Force form inputs and selects to never exceed their column width */
+input, select, textarea {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+/* Rotate chevron icon when its collapsible section is expanded */
+[data-bs-toggle="collapse"] .bi-chevron-down {
+    transition: transform 0.2s ease;
+}
+[data-bs-toggle="collapse"][aria-expanded="true"] .bi-chevron-down {
+    transform: rotate(180deg);
+}
+/* ===== Fixed navbar + sidebar, independently scrolling content ===== */
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.navbar.sticky-top {
+    flex-shrink: 0;
+}
+
+.app-body-wrapper {
+    flex: 1 1 auto;
+    display: flex;
+    overflow: hidden;
+    min-height: 0;
+}
+
+#sidebarOffcanvas.offcanvas-lg {
+    flex-shrink: 0;
+    height: 100%;
+    overflow-y: auto;
+}
+
+main.flex-grow-1 {
+    overflow-y: auto;
+    height: 100%;
+}
+
+/* On mobile, the offcanvas sidebar overlays instead of participating in flex layout */
+@media (max-width: 991.98px) {
+    body {
+        overflow: auto;
+    }
+    main.flex-grow-1 {
+        overflow-y: visible;
+        height: auto;
+    }
+}
+/* Subtle fade-up animation for dashboard stat/action cards */
+.card {
+    animation: fadeUpIn 0.4s ease both;
+}
+@keyframes fadeUpIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* ===== Dashboard gradient backgrounds ===== */
+.grad-primary { background: linear-gradient(135deg, #2575fc, #6a11cb); }
+.grad-success { background: linear-gradient(135deg, #11998e, #38ef7d); }
+.grad-warning { background: linear-gradient(135deg, #f7971e, #ffd200); }
+.grad-info { background: linear-gradient(135deg, #00c6ff, #0072ff); }
+.grad-admin-hero { background: linear-gradient(135deg, #141e30, #243b55); }
+
+/* ===== Hover lift effect for interactive cards ===== */
+.hover-elevate {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-elevate:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ===== Module cards (Head of School quick-links grid) ===== */
+.module-card {
+    border-radius: 16px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.module-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
+}
+.module-icon-box {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+}
+
+/* ===== Large faint background icon inside stat cards ===== */
+.stat-bg-icon {
+    position: absolute;
+    right: 1rem;
+    bottom: 0.5rem;
+    font-size: 3.5rem;
+    opacity: 0.15;
+    color: white;
+}
+
+/* ===== Staggered entrance animation ===== */
+.animate-up {
+    animation: fadeUpIn 0.5s ease both;
+}
+.delay-1 { animation-delay: 0.05s; }
+.delay-2 { animation-delay: 0.15s; }
+.delay-3 { animation-delay: 0.25s; }
+.delay-4 { animation-delay: 0.35s; }

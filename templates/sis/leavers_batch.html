@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}{{ form }} Leavers {{ year }} - School App{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>{{ form }} Leavers - {{ year }}</h3>
+    <a href="{% url 'sis:leavers_year_detail' year %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Admission No.</th>
+                    <th>Name</th>
+                    <th>Last Stream</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.admission_number }}</td>
+                    <td>{{ student }}</td>
+                    <td>{{ student.stream|default:"—" }}</td>
+                    <td><span class="badge text-bg-secondary">{{ student.get_status_display }}</span></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted py-4">No students in this batch.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% block title %}Register Student - School App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h4 class="mb-0">{% if student %}Edit Student{% else %}Register New Student{% endif %}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Middle Name</label>
+                            {{ form.middle_name }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Date of Birth</label>
+                            {{ form.date_of_birth }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Gender</label>
+                            {{ form.gender }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Status</label>
+                            {{ form.status }}
+                        </div>
+                        <div class="col-md-4" id="leaving-year-wrapper" style="display: none;">
+                            <label class="form-label">Year of Graduation</label>
+                            {{ form.leaving_year }}
+                        </div>
+                       <div class="col-md-4">
+                            <label class="form-label">Class</label>
+                            <select id="class-filter" class="form-select">
+                                <option value="">-- Select Class First --</option>
+                                {% for sc in school_classes %}
+                                    <option value="{{ sc.id }}">{{ sc.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Stream</label>
+                            {{ form.stream }}
+                            {% if form.stream.errors %}
+                                <div class="text-danger small mt-1">{{ form.stream.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4" id="combination-wrapper" style="display: none;">
+                            <label class="form-label">Combination</label>
+                            {{ form.combination }}
+                        </div>
+                        {% if form.non_field_errors %}
+                            <div class="col-12">
+                                <div class="text-danger small">{{ form.non_field_errors.0 }}</div>
+                            </div>
+                        {% endif %}
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">{% if student %}Update Student{% else %}Save Student{% endif %}</button>
+                        <a href="{% url 'sis:student_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const statusSelect = document.querySelector('#id_status');
+    const leavingYearWrapper = document.getElementById('leaving-year-wrapper');
+
+    function toggleLeavingYear() {
+        leavingYearWrapper.style.display = statusSelect.value === 'GRADUATED' ? '' : 'none';
+    }
+
+    statusSelect.addEventListener('change', toggleLeavingYear);
+    toggleLeavingYear();
+
+    const classFilter = document.getElementById('class-filter');
+    const streamSelect = document.querySelector('#id_stream');
+    const combinationSelect = document.querySelector('#id_combination');
+    const combinationWrapper = document.getElementById('combination-wrapper');
+
+    const allStreamOptions = Array.from(streamSelect.options);
+    const allCombinationOptions = Array.from(combinationSelect.options);
+
+    function filterStreamsByClass() {
+        const classId = classFilter.value;
+        streamSelect.innerHTML = '';
+        allStreamOptions.forEach(function (option) {
+            if (!classId || option.dataset.classId === classId || option.value === '') {
+                streamSelect.appendChild(option);
+            }
+        });
+        onStreamChange();
+    }
+
+    function onStreamChange() {
+        const selected = streamSelect.options[streamSelect.selectedIndex];
+        const category = selected ? selected.dataset.category : '';
+
+        if (category) {
+            combinationWrapper.style.display = '';
+            combinationSelect.innerHTML = '';
+            allCombinationOptions.forEach(function (option) {
+                if (option.dataset.category === category || option.value === '') {
+                    combinationSelect.appendChild(option);
+                }
+            });
+        } else {
+            combinationWrapper.style.display = 'none';
+            combinationSelect.innerHTML = '';
+            combinationSelect.appendChild(allCombinationOptions[0]);
+        }
+    }
+
+    classFilter.addEventListener('change', filterStreamsByClass);
+    streamSelect.addEventListener('change', onStreamChange);
+
+    // Run once on page load in case of pre-filled values (e.g. editing a student)
+    onStreamChange();
+});
+</script>
+{% endblock %}

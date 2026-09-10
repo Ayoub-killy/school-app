@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}{% if stream %}Edit{% else %}Add{% endif %} Stream - School App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h4 class="mb-0">{% if stream %}Edit Stream{% else %}Add Stream{% endif %}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Class</label>
+                        {{ form.school_class }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Name (e.g. 'A', 'B', or leave blank for A-Level)</label>
+                        {{ form.name }}
+                    </div>
+                    <div class="mb-3" id="alevel-fields">
+                        <label class="form-label">Category (A-Level)</label>
+                        {{ form.category }}
+                        <label class="form-label mt-2">Combination</label>
+                        {{ form.combination }}
+                    </div>
+                    <div class="mb-3" id="olevel-fields">
+                        <label class="form-label d-block">O-Level Categories (check all that apply)</label>
+                        {{ form.olevel_categories }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="{% url 'sis:stream_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const classSelect = document.querySelector('#id_school_class');
+    const alevelFields = document.getElementById('alevel-fields');
+    const olevelFields = document.getElementById('olevel-fields');
+
+    // school_class options need a data-level attribute to know which set to show.
+    // We read it from each option's text as a fallback isn't reliable, so instead
+    // we fetch level info via a small lookup built from the option labels is not safe;
+    // instead we rely on a data-level attribute added server-side (see forms.py note).
+    function toggleFields() {
+        const selected = classSelect.options[classSelect.selectedIndex];
+        const level = selected ? selected.dataset.level : '';
+        if (level === 'A_LEVEL') {
+            alevelFields.style.display = '';
+            olevelFields.style.display = 'none';
+        } else if (level === 'O_LEVEL') {
+            alevelFields.style.display = 'none';
+            olevelFields.style.display = '';
+        } else {
+            alevelFields.style.display = '';
+            olevelFields.style.display = '';
+        }
+    }
+
+    classSelect.addEventListener('change', toggleFields);
+    toggleFields();
+});
+</script>
+{% endblock %}

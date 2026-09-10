@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}New Lesson Plan - School App{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header"><h4 class="mb-0">New Lesson Plan</h4></div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Class / Stream</label>
+                        {{ form.stream }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Subject</label>
+                        {{ form.subject }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Start Date</label>
+                        {{ form.start_date }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">End Date</label>
+                        {{ form.end_date }}
+                    </div>
+                    {% if form.non_field_errors %}
+                        <div class="text-danger small mb-2">{{ form.non_field_errors.0 }}</div>
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary">Create &amp; Add Topics</button>
+                    <a href="{% url 'sis:lesson_plan_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

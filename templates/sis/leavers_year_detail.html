@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Leavers {{ year }} - School App{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>Leavers - {{ year }}</h3>
+    <a href="{% url 'sis:leavers_years' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Back to Years
+    </a>
+</div>
+
+<div class="row g-3">
+    {% if has_form4 %}
+    <div class="col-6 col-md-4">
+        <a href="{% url 'sis:leavers_batch' year 'Form 4' %}" class="text-decoration-none">
+            <div class="card shadow-sm h-100 text-center">
+                <div class="card-body">
+                    <i class="bi bi-mortarboard fs-1 text-success"></i>
+                    <h5 class="card-title mt-2">Form 4 Leavers</h5>
+                    <small class="text-muted">January {{ year|add:1 }} batch</small>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if has_form6 %}
+    <div class="col-6 col-md-4">
+        <a href="{% url 'sis:leavers_batch' year 'Form 6' %}" class="text-decoration-none">
+            <div class="card shadow-sm h-100 text-center">
+                <div class="card-body">
+                    <i class="bi bi-mortarboard-fill fs-1 text-warning"></i>
+                    <h5 class="card-title mt-2">Form 6 Leavers</h5>
+                    <small class="text-muted">July {{ year }} batch</small>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if not has_form4 and not has_form6 %}
+    <p class="text-muted">No leavers found for {{ year }}.</p>
+    {% endif %}
+</div>
+{% endblock %}

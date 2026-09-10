@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}Transactions - School App{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Transactions</h3>
+    <a href="{% url 'resources:transaction_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Record Transaction
+    </a>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="card text-bg-success">
+            <div class="card-body">
+                <h6>Total Income</h6>
+                <p class="display-6">{{ total_income }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-bg-danger">
+            <div class="card-body">
+                <h6>Total Expense</h6>
+                <p class="display-6">{{ total_expense }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-bg-primary">
+            <div class="card-body">
+                <h6>Balance</h6>
+                <p class="display-6">{{ balance }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for group in grouped %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <span class="fw-bold">
+            <i class="bi bi-{% if group.category.type == 'INCOME' %}graph-up-arrow text-success{% else %}graph-down-arrow text-danger{% endif %} me-2"></i>
+            {{ group.category.name }}
+        </span>
+        <span class="badge text-bg-{% if group.category.type == 'INCOME' %}success{% else %}danger{% endif %} fs-6">
+            Total: {{ group.total }}
+        </span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Student</th>
+                    <th>Staff</th>
+                    <th>Recorded By</th>
+                    <th>Receipt</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in group.transactions %}
+                <tr>
+                    <td>{{ t.date }}</td>
+                    <td class="{% if t.category.type == 'INCOME' %}text-success{% else %}text-danger{% endif %} fw-semibold">
+                        {{ t.amount }}
+                    </td>
+                    <td>{{ t.student|default:"—" }}</td>
+                    <td>{{ t.staff|default:"—" }}</td>
+                    <td>{{ t.recorded_by|default:"—" }}</td>
+                    <td>
+                        {% if t.receipt %}
+                        <a href="{{ t.receipt.url }}" target="_blank" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-file-earmark-image"></i> View
+                        </a>
+                        {% else %}
+                        <span class="text-muted small">None</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'resources:transaction_update' t.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'resources:transaction_delete' t.pk %}" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% empty %}
+<div class="card shadow-sm">
+    <div class="card-body text-center text-muted py-5">No transactions recorded yet.</div>
+</div>
+{% endfor %}
+{% endblock %}

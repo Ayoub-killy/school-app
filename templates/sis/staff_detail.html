@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}{{ staff.user.get_full_name }} - School App{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3><i class="bi bi-person-vcard me-2"></i>{{ staff.user.get_full_name }}</h3>
+    <div>
+        <a href="{% url 'sis:staff_update' staff.pk %}" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Edit</a>
+        <a href="{% url 'sis:staff_list' %}" class="btn btn-outline-secondary">Back</a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4 text-center">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                {% if staff.photo %}
+                    <img src="{{ staff.photo.url }}" class="rounded-circle mb-3" width="120" height="120" style="object-fit: cover;">
+                {% else %}
+                    <i class="bi bi-person-circle display-1 text-muted mb-3 d-block"></i>
+                {% endif %}
+                <h5 class="fw-bold mb-0">{{ staff.user.get_full_name }}</h5>
+                <p class="text-muted mb-2">{{ staff.user.get_role_display }}</p>
+                <span class="badge text-bg-{% if staff.is_active %}success{% else %}secondary{% endif %}">
+                    {% if staff.is_active %}Active{% else %}Inactive{% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-white"><i class="bi bi-info-circle me-1"></i> Profile Information</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6"><p><strong>Staff No.:</strong> {{ staff.staff_number }}</p></div>
+                    <div class="col-md-6"><p><strong>Username:</strong> {{ staff.user.username }}</p></div>
+                    <div class="col-md-6"><p><strong>Email:</strong> {{ staff.user.email|default:"—" }}</p></div>
+                    <div class="col-md-6"><p><strong>Phone:</strong> {{ staff.phone_number|default:"—" }}</p></div>
+                    <div class="col-md-6"><p><strong>Gender:</strong> {{ staff.get_gender_display|default:"—" }}</p></div>
+                    <div class="col-md-6"><p><strong>Date of Birth:</strong> {{ staff.date_of_birth|default:"—" }}</p></div>
+                    <div class="col-md-6"><p><strong>Department:</strong> {{ staff.department|default:"—" }}</p></div>
+                    <div class="col-md-6"><p><strong>Date Joined:</strong> {{ staff.date_joined }}</p></div>
+                    <div class="col-12"><p><strong>Address:</strong> {{ staff.address|default:"—" }}</p></div>
+                </div>
+            </div>
+        </div>
+
+        {% if staff.user.role == 'TEACHER' %}
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white"><i class="bi bi-journal-bookmark me-1"></i> Subjects Taught</div>
+                    <ul class="list-group list-group-flush">
+                        {% for s in subjects_taught %}
+                            <li class="list-group-item">{{ s.name }} ({{ s.code }})</li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">No subjects assigned.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-white"><i class="bi bi-diagram-3 me-1"></i> Classes / Streams Managed</div>
+                    <ul class="list-group list-group-flush">
+                        {% for c in classes_managed %}
+                            <li class="list-group-item">{{ c.name }} (Class Teacher)</li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">Not a class teacher for any class.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if departments_headed %}
+        <div class="card shadow-sm mt-3">
+            <div class="card-header bg-white"><i class="bi bi-building me-1"></i> Departments Headed</div>
+            <ul class="list-group list-group-flush">
+                {% for d in departments_headed %}
+                    <li class="list-group-item">{{ d.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

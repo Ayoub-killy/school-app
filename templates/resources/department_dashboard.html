@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}{{ department.name }} Department - School App{% endblock %}
+{% block content %}
+<div class="p-4 rounded-4 mb-4 text-white shadow-sm" style="background: linear-gradient(135deg, #6a11cb, #2575fc);">
+    <div class="d-flex align-items-center flex-wrap">
+        <i class="bi bi-building display-3 me-3"></i>
+        <div>
+            <h2 class="mb-1 fw-bold">Welcome, {{ user.get_full_name|default:user.username }}!</h2>
+            <p class="mb-0 opacity-75 fs-5">{{ department.name }} Department Portal</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card shadow-sm text-center border-0" style="background:#eafbee;">
+            <div class="card-body p-4"><i class="bi bi-graph-up-arrow fs-1 text-success"></i><h3 class="mt-2 mb-0 fw-bold">{{ total_income }}</h3><span class="text-muted">Income</span></div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card shadow-sm text-center border-0" style="background:#fdeaea;">
+            <div class="card-body p-4"><i class="bi bi-graph-down-arrow fs-1 text-danger"></i><h3 class="mt-2 mb-0 fw-bold">{{ total_expense }}</h3><span class="text-muted">Expense</span></div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card shadow-sm text-center border-0" style="background:#eef5ff;">
+            <div class="card-body p-4"><i class="bi bi-clipboard-check fs-1 text-primary"></i><h3 class="mt-2 mb-0 fw-bold">{{ demands|length }}</h3><span class="text-muted">Recent Demands</span></div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card shadow-sm text-center border-0" style="background:#fff8e6;">
+            <div class="card-body p-4"><i class="bi bi-box-seam fs-1 text-warning"></i><h3 class="mt-2 mb-0 fw-bold">{{ inventory|length }}</h3><span class="text-muted">Recent Inventory</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <a href="{% url 'resources:demand_list' %}" class="text-decoration-none">
+            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background:#11998e;">
+                <div class="card-body py-3"><i class="bi bi-clipboard-plus fs-3"></i><p class="mt-1 mb-0 fw-semibold">Demands</p></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{% url 'resources:department_transaction_list' %}" class="text-decoration-none">
+            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background:#2575fc;">
+                <div class="card-body py-3"><i class="bi bi-cash-coin fs-3"></i><p class="mt-1 mb-0 fw-semibold">Income &amp; Expense</p></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{% url 'resources:department_inventory_list' %}" class="text-decoration-none">
+            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background:#f5a623;">
+                <div class="card-body py-3"><i class="bi bi-box-seam fs-3"></i><p class="mt-1 mb-0 fw-semibold">Inventory</p></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a href="{% url 'resources:department_report_generate' %}" class="text-decoration-none">
+            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background:#6a11cb;">
+                <div class="card-body py-3"><i class="bi bi-file-earmark-pdf fs-3"></i><p class="mt-1 mb-0 fw-semibold">Generate Report</p></div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white"><i class="bi bi-file-earmark-pdf me-1"></i> Recent Reports</div>
+    <ul class="list-group list-group-flush">
+        {% for r in reports %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ r.title }}</span>
+                <span>
+                    {% if r.sent_to_head %}<span class="badge text-bg-success me-2">Sent to Head</span>{% endif %}
+                    <a href="{{ r.pdf_file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">View PDF</a>
+                </span>
+            </li>
+        {% empty %}
+            <li class="list-group-item text-muted">No reports generated yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

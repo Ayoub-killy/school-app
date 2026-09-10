@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Invite Staff - School App{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h4 class="mb-0">Invite New Staff Member</h4>
+            </div>
+            <div class="card-body">
+                <p class="text-muted small">
+                    Enter the staff member's email, role, and department. They will receive
+                    a link to complete their own profile and set their own password.
+                </p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        {{ form.role }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Department</label>
+                        {{ form.department }}
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-1"></i> Send Invitation
+                        </button>
+                        <a href="{% url 'accounts:staff_invitations' %}" class="btn btn-outline-secondary">
+                            View Invitations
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

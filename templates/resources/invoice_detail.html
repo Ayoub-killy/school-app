@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Invoice - {{ invoice.student }} - School App{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">Invoice Details</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Student:</strong> {{ invoice.student }}</p>
+                <p><strong>Fee Structure:</strong> {{ invoice.fee_structure }}</p>
+                <p><strong>Amount Due:</strong> {{ invoice.amount_due }}</p>
+                <p><strong>Total Paid:</strong> {{ invoice.total_paid }}</p>
+                <p><strong>Balance:</strong> {{ invoice.balance }}</p>
+                <p><strong>Status:</strong>
+                    <span class="badge text-bg-{% if invoice.status == 'PAID' %}success{% elif invoice.status == 'PARTIALLY_PAID' %}warning{% else %}danger{% endif %}">
+                        {{ invoice.get_status_display }}
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        {% if invoice.status != 'PAID' %}
+        <div class="card shadow-sm">
+            <div class="card-header">Record a Payment</div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Amount Paid</label>
+                        {{ form.amount_paid }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Date Paid</label>
+                        {{ form.date_paid }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Record Payment</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header">Payment History</div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Recorded By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr>
+                            <td>{{ payment.date_paid }}</td>
+                            <td>{{ payment.amount_paid }}</td>
+                            <td>{{ payment.recorded_by|default:"—" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-4">No payments recorded yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

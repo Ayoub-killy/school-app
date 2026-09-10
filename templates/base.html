@@ -1,0 +1,359 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}School App{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark px-3 sticky-top">
+{% if user.is_authenticated and request.session.active_role == 'HEAD_OF_SCHOOL' or request.session.active_role == 'ADMIN' or request.session.active_role == 'LIBRARIAN' or request.session.active_role == 'ACADEMIC_MASTER' or request.session.active_role == 'ACCOUNTANT' or request.session.active_role == 'DEPARTMENT_STAFF' or request.session.active_role == 'TEACHER' %}
+    <button class="btn btn-outline-light d-lg-none me-2" type="button"
+            data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
+        <i class="bi bi-list"></i>
+    </button>
+    {% endif %}
+
+    <a class="navbar-brand" href="{% url 'dashboard:home' %}">School App</a>
+
+    {% if user.is_authenticated %}
+    <div class="ms-auto d-flex align-items-center">
+        <span class="text-white me-3 d-none d-sm-inline">
+            {{ user.get_full_name|default:user.username }} ({{ user.get_role_display }})
+        </span>
+        <form method="post" action="{% url 'accounts:logout' %}" class="mb-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-light btn-sm">Log Out</button>
+        </form>
+    </div>
+    {% endif %}
+</nav>
+
+<div class="d-flex app-body-wrapper">
+
+{% if user.is_authenticated and request.session.active_role == 'HEAD_OF_SCHOOL' or request.session.active_role == 'ADMIN' or request.session.active_role == 'LIBRARIAN' or request.session.active_role == 'ACADEMIC_MASTER' or request.session.active_role == 'ACCOUNTANT' or request.session.active_role == 'DEPARTMENT_STAFF' or request.session.active_role == 'TEACHER' %}
+    <div class="offcanvas-lg offcanvas-start bg-dark text-white d-flex flex-column" tabindex="-1" id="sidebarOffcanvas"
+         aria-labelledby="sidebarLabel" style="width: 260px; max-width: 85vw;">
+
+        <div class="offcanvas-header d-lg-none">
+            <h5 class="offcanvas-title" id="sidebarLabel">Menu</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                    data-bs-target="#sidebarOffcanvas" aria-label="Close"></button>
+        </div>
+
+        <div class="offcanvas-body d-flex flex-column p-3">
+            <ul class="nav nav-pills flex-column gap-1">
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'dashboard:home' %}">
+                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                    </a>
+                </li>
+
+                {% if request.session.active_role == 'TEACHER' %}
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'sis:my_class' %}">
+                        <i class="bi bi-mortarboard me-2"></i> Manage Your Class
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'sis:teaching_schedule_list' %}">
+                        <i class="bi bi-calendar-week me-2"></i> Teaching Schedule
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'sis:lesson_plan_list' %}">
+                        <i class="bi bi-journal-text me-2"></i> Lesson Plans
+                    </a>
+                </li>
+                {% endif %}
+
+                {% if request.session.active_role == 'DEPARTMENT_STAFF' %}
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-white d-flex justify-content-between align-items-center"
+                       data-bs-toggle="collapse" href="#collapseDept" role="button"
+                       aria-expanded="false" aria-controls="collapseDept">
+                        <span class="text-uppercase small fw-bold">My Department</span>
+                        <i class="bi bi-chevron-down small"></i>
+                    </a>
+                    <div class="collapse" id="collapseDept">
+                        <ul class="nav nav-pills flex-column gap-1 ms-2 mt-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'resources:demand_list' %}">
+                                    <i class="bi bi-clipboard-plus me-2"></i> Demands
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'resources:department_transaction_list' %}">
+                                    <i class="bi bi-cash-coin me-2"></i> Income &amp; Expense
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'resources:department_inventory_list' %}">
+                                    <i class="bi bi-box-seam me-2"></i> Inventory
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'resources:department_report_generate' %}">
+                                    <i class="bi bi-file-earmark-pdf me-2"></i> Generate Report
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                {% endif %}
+
+                {% if user.role == 'HEAD_OF_SCHOOL' or user.role == 'ADMIN' or user.role == 'LIBRARIAN' %}
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-white d-flex justify-content-between align-items-center"
+                       data-bs-toggle="collapse" href="#collapseLibrary" role="button"
+                       aria-expanded="false" aria-controls="collapseLibrary">
+                        <span class="text-uppercase small fw-bold">Library</span>
+                        <i class="bi bi-chevron-down small"></i>
+                    </a>
+                    <div class="collapse" id="collapseLibrary">
+                        <ul class="nav nav-pills flex-column gap-1 ms-2 mt-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'library:book_list' %}">
+                                    <i class="bi bi-book me-2"></i> Books
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'library:bookcategory_list' %}">
+                                    <i class="bi bi-tags me-2"></i> Book Categories
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'library:member_list' %}">
+                                    <i class="bi bi-people me-2"></i> Members
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'library:loan_list' %}">
+                                    <i class="bi bi-journal-check me-2"></i> Active Loans
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                {% endif %}
+
+                {% if user.role == 'HEAD_OF_SCHOOL' or user.role == 'ADMIN' or user.role == 'ACADEMIC_MASTER' %}
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-white d-flex justify-content-between align-items-center"
+                       data-bs-toggle="collapse" href="#collapseStudents" role="button"
+                       aria-expanded="false" aria-controls="collapseStudents">
+                        <span class="text-uppercase small fw-bold">Students</span>
+                        <i class="bi bi-chevron-down small"></i>
+                    </a>
+                    <div class="collapse" id="collapseStudents">
+                        <ul class="nav nav-pills flex-column gap-1 ms-2 mt-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:students_by_class' %}">
+                                    <i class="bi bi-people me-2"></i> Students by Class
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:student_list' %}">
+                                    <i class="bi bi-list-ul me-2"></i> All Students (List)
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:student_create' %}">
+                                    <i class="bi bi-person-plus me-2"></i> Register Student
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:student_import' %}">
+                                    <i class="bi bi-file-earmark-excel me-2"></i> Import from Excel
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:leavers_years' %}">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Leavers / Alumni
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-white d-flex justify-content-between align-items-center"
+                       data-bs-toggle="collapse" href="#collapseAcademic" role="button"
+                       aria-expanded="false" aria-controls="collapseAcademic">
+                        <span class="text-uppercase small fw-bold">Academic Setup</span>
+                        <i class="bi bi-chevron-down small"></i>
+                    </a>
+                    <div class="collapse" id="collapseAcademic">
+                        <ul class="nav nav-pills flex-column gap-1 ms-2 mt-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:academicyear_list' %}">
+                                    <i class="bi bi-calendar-range me-2"></i> Academic Years
+                                </a>
+                            </li>
+                                                        <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:semester_list' %}">
+                                    <i class="bi bi-calendar2-week me-2"></i> Semesters
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:term_list' %}">
+                                    <i class="bi bi-calendar3-week me-2"></i> Terms
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:schoolclass_list' %}">
+                                    <i class="bi bi-diagram-3 me-2"></i> Classes
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:class_teachers_manage' %}">
+                                    <i class="bi bi-person-check me-2"></i> Class Teachers
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:stream_list' %}">
+                                    <i class="bi bi-signpost-split me-2"></i> Streams
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:combination_list' %}">
+                                    <i class="bi bi-collection me-2"></i> Combinations
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:subject_list' %}">
+                                    <i class="bi bi-book me-2"></i> Subjects
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:department_list' %}">
+                                    <i class="bi bi-building me-2"></i> Departments
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                {% endif %}
+
+                {% if user.role == 'HEAD_OF_SCHOOL' or user.role == 'ADMIN' %}
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-white d-flex justify-content-between align-items-center"
+                       data-bs-toggle="collapse" href="#collapseStaff" role="button"
+                       aria-expanded="false" aria-controls="collapseStaff">
+                        <span class="text-uppercase small fw-bold">Staff &amp; Guardians</span>
+                        <i class="bi bi-chevron-down small"></i>
+                    </a>
+                    <div class="collapse" id="collapseStaff">
+                        <ul class="nav nav-pills flex-column gap-1 ms-2 mt-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:staff_list' %}">
+                                    <i class="bi bi-person-badge me-2"></i> Staff
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'accounts:staff_invite' %}">
+                                    <i class="bi bi-person-plus me-2"></i> Invite Staff
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'accounts:staff_invitations' %}">
+                                    <i class="bi bi-envelope-check me-2"></i> Pending Invitations
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'sis:guardian_list' %}">
+                                    <i class="bi bi-person-hearts me-2"></i> Guardians
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                {% endif %}
+
+                {% if user.role == 'HEAD_OF_SCHOOL' or user.role == 'ADMIN' or user.role == 'ACCOUNTANT' %}
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-white d-flex justify-content-between align-items-center"
+                       data-bs-toggle="collapse" href="#collapseResources" role="button"
+                       aria-expanded="false" aria-controls="collapseResources">
+                        <span class="text-uppercase small fw-bold">Resource Management</span>
+                        <i class="bi bi-chevron-down small"></i>
+                    </a>
+                    <div class="collapse" id="collapseResources">
+                        <ul class="nav nav-pills flex-column gap-1 ms-2 mt-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'resources:transaction_list' %}">
+                                    <i class="bi bi-cash-stack me-2"></i> Transactions
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'resources:category_list' %}">
+                                    <i class="bi bi-tags me-2"></i> Categories
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'resources:feestructure_list' %}">
+                                    <i class="bi bi-file-earmark-ruled me-2"></i> Fee Structures
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'resources:invoice_list' %}">
+                                    <i class="bi bi-receipt me-2"></i> Invoices
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'resources:item_list' %}">
+                                    <i class="bi bi-box-seam me-2"></i> Inventory Items
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'resources:itemcategory_list' %}">
+                                    <i class="bi bi-tags me-2"></i> Item Categories
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'resources:head_reports_list' %}">
+                                    <i class="bi bi-file-earmark-pdf me-2"></i> Department Reports
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'resources:department_comparison' %}">
+                                    <i class="bi bi-bar-chart-line me-2"></i> Department Comparison
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+    <main class="flex-grow-1 p-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/custom.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

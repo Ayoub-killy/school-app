@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}{% if member %}Edit{% else %}Add{% endif %} Library Member - School App{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header"><h4 class="mb-0">{% if member %}Edit{% else %}Add{% endif %} Library Member</h4></div>
+            <div class="card-body">
+                {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors.0 }}</div>{% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3"><label class="form-label">Member Type</label>{{ form.member_type }}</div>
+
+                    <div class="mb-3" id="field-student" style="display:none;">
+                        <label class="form-label">Student</label>{{ form.student }}
+                    </div>
+                    <div class="mb-3" id="field-staff" style="display:none;">
+                        <label class="form-label">Staff</label>{{ form.staff }}
+                    </div>
+                    <div id="field-external" style="display:none;">
+                        <div class="mb-3"><label class="form-label">Full Name</label>{{ form.external_full_name }}</div>
+                        <div class="mb-3"><label class="form-label">Phone</label>{{ form.external_phone }}</div>
+                        <div class="mb-3"><label class="form-label">Relationship</label>{{ form.external_relationship }}</div>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        {{ form.is_active }}
+                        <label class="form-check-label">Active</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="{% url 'library:member_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const typeSelect = document.getElementById('id_member_type');
+    const fields = {
+        STUDENT: document.getElementById('field-student'),
+        STAFF: document.getElementById('field-staff'),
+        EXTERNAL: document.getElementById('field-external'),
+    };
+
+    function updateVisibility() {
+        Object.keys(fields).forEach(key => {
+            fields[key].style.display = (typeSelect.value === key) ? '' : 'none';
+        });
+    }
+
+    typeSelect.addEventListener('change', updateVisibility);
+    updateVisibility();
+});
+</script>
+{% endblock %}

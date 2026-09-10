@@ -1,0 +1,636 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - School App{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+
+    {% if total_staff is not None %}
+        <div class="p-4 rounded-4 mb-4 text-white shadow-sm grad-admin-hero animate-up">
+            <div class="d-flex align-items-center flex-wrap">
+                <i class="bi bi-shield-lock-fill display-4 me-3 text-warning"></i>
+                <div>
+                    <h2 class="mb-1 fw-bold">Welcome, {{ user.get_full_name|default:user.username }}!</h2>
+                    <p class="mb-0 opacity-75 fs-5">System Administrator &amp; Head of School Dashboard</p>
+                </div>
+                <div class="ms-auto mt-3 mt-md-0">
+                    <span class="badge bg-white text-dark px-3 py-2 rounded-pill shadow-sm fs-6">
+                        <i class="bi bi-calendar3 me-2"></i>{% now "l, F j, Y" %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-12 col-md-4 animate-up delay-1">
+                <div class="card grad-primary hover-elevate shadow-sm h-100 position-relative">
+                    <div class="card-body p-4">
+                        <h6 class="text-uppercase fw-semibold mb-1 opacity-75 text-white">Active Students</h6>
+                        <h1 class="display-4 fw-bold mb-0 text-white">{{ total_students }}</h1>
+                        <i class="bi bi-people-fill stat-bg-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 animate-up delay-2">
+                <div class="card grad-success hover-elevate shadow-sm h-100 position-relative">
+                    <div class="card-body p-4">
+                        <h6 class="text-uppercase fw-semibold mb-1 opacity-75 text-white">Active Staff</h6>
+                        <h1 class="display-4 fw-bold mb-0 text-white">{{ total_staff }}</h1>
+                        <i class="bi bi-person-badge stat-bg-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 animate-up delay-3">
+                <div class="card grad-warning hover-elevate shadow-sm h-100 position-relative">
+                    <div class="card-body p-4">
+                        <h6 class="text-uppercase fw-semibold mb-1 opacity-75 text-white">School Classes</h6>
+                        <h1 class="display-4 fw-bold mb-0 text-white">{{ total_classes }}</h1>
+                        <i class="bi bi-diagram-3-fill stat-bg-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="fw-bold text-dark mb-3 animate-up delay-3"><i class="bi bi-grid-1x2-fill text-primary me-2"></i>School Management Modules</h5>
+        <div class="row g-4 animate-up delay-4">
+            <div class="col-12 col-sm-6 col-lg-4">
+                <a href="{% url 'dashboard:academic_hub' %}" class="text-decoration-none text-dark">
+                    <div class="card bg-white module-card h-100 text-center p-4">
+                        <div class="module-icon-box bg-primary bg-opacity-10 text-primary mx-auto mb-3">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </div>
+                        <h5 class="fw-bold mb-1">Academics &amp; SIS</h5>
+                        <p class="text-muted small mb-0">Manage students, classes, streams, and academic records.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+                <a href="{% url 'dashboard:library_hub' %}" class="text-decoration-none text-dark">
+                    <div class="card bg-white module-card h-100 text-center p-4">
+                        <div class="module-icon-box bg-success bg-opacity-10 text-success mx-auto mb-3">
+                            <i class="bi bi-book-half"></i>
+                        </div>
+                        <h5 class="fw-bold mb-1">Library System</h5>
+                        <p class="text-muted small mb-0">Track book inventory, manage loans, and oversee library members.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+                <a href="{% url 'dashboard:staff_hub' %}" class="text-decoration-none text-dark">
+                    <div class="card bg-white module-card h-100 text-center p-4">
+                        <div class="module-icon-box bg-warning bg-opacity-10 text-warning mx-auto mb-3">
+                            <i class="bi bi-person-lines-fill"></i>
+                        </div>
+                        <h5 class="fw-bold mb-1">Staff Directory</h5>
+                        <p class="text-muted small mb-0">Manage staff profiles, departments, and department heads.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+                <a href="{% url 'dashboard:resources_hub' %}" class="text-decoration-none text-dark">
+                    <div class="card bg-white module-card h-100 text-center p-4">
+                        <div class="module-icon-box bg-danger bg-opacity-10 text-danger mx-auto mb-3">
+                            <i class="bi bi-cash-coin"></i>
+                        </div>
+                        <h5 class="fw-bold mb-1">Resources Management</h5>
+                        <p class="text-muted small mb-0">Finance, invoicing, and inventory management.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    {% elif subjects is not None %}
+        <div class="p-4 rounded-4 mb-4 text-white shadow-sm grad-info animate-up">
+            <h3 class="mb-1 fw-bold">Welcome, {{ user.get_full_name|default:user.username }}!</h3>
+            <p class="mb-0 opacity-75">Teacher Dashboard — view your subjects and managed streams.</p>
+        </div>
+        <div class="row g-4 mt-2">
+            <div class="col-12 col-md-6 animate-up delay-1">
+                <div class="card hover-elevate shadow-sm h-100 border-0">
+                    <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                        <h5 class="fw-bold"><i class="bi bi-journal-bookmark-fill text-primary me-2"></i>Your Subjects</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush rounded-3">
+                            {% for subject in subjects %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center border-light py-3">
+                                    <span class="fw-semibold">{{ subject.name }}</span>
+                                    <span class="badge bg-primary rounded-pill">{{ subject.code }}</span>
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item text-muted text-center py-4 bg-light rounded-3">No subjects assigned yet.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 animate-up delay-2">
+                <div class="card hover-elevate shadow-sm h-100 border-0">
+                    <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                        <h5 class="fw-bold"><i class="bi bi-people-fill text-success me-2"></i>Streams You Manage</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush rounded-3">
+                            {% for stream in streams_managed %}
+                                <li class="list-group-item d-flex align-items-center border-light py-3">
+                                    <i class="bi bi-check-circle-fill text-success me-3"></i>
+                                    <span class="fw-semibold">{{ stream }}</span>
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item text-muted text-center py-4 bg-light rounded-3">Not a class teacher for any stream.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% elif total_classes is not None and class_breakdown is not None %}
+        <div class="p-4 rounded-4 mb-4 text-white shadow-sm animate-up" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
+            <div class="d-flex align-items-center flex-wrap">
+                <i class="bi bi-mortarboard-fill display-3 me-3"></i>
+                <div>
+                    <h2 class="mb-1 fw-bold">Welcome, {{ user.get_full_name|default:user.username }}!</h2>
+                    <p class="mb-0 opacity-75 fs-5">Academic Master Dashboard — manage students &amp; academic structure.</p>
+                </div>
+                <div class="ms-auto mt-3 mt-md-0">
+                    <span class="badge bg-white text-dark px-3 py-2 rounded-pill shadow-sm fs-6">
+                        <i class="bi bi-calendar3 me-2"></i>{% now "l, F j, Y" %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-6 col-lg-3 animate-up delay-1">
+                <div class="card shadow-sm hover-elevate h-100 text-center border-0" style="background: #eef5ff;">
+                    <div class="card-body p-4">
+                        <i class="bi bi-people fs-1 text-primary"></i>
+                        <h2 class="mt-3 mb-0 fw-bold">{{ total_students }}</h2>
+                        <span class="text-muted fw-semibold">Registered Students</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3 animate-up delay-2">
+                <div class="card shadow-sm hover-elevate h-100 text-center border-0" style="background: #f3eaff;">
+                    <div class="card-body p-4">
+                        <i class="bi bi-diagram-3 fs-1" style="color:#6a11cb;"></i>
+                        <h2 class="mt-3 mb-0 fw-bold">{{ total_classes }}</h2>
+                        <span class="text-muted fw-semibold">Classes</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3 animate-up delay-3">
+                <div class="card shadow-sm hover-elevate h-100 text-center border-0" style="background: #fff8e6;">
+                    <div class="card-body p-4">
+                        <i class="bi bi-building fs-1 text-warning"></i>
+                        <h2 class="mt-3 mb-0 fw-bold">{{ total_departments }}</h2>
+                        <span class="text-muted fw-semibold">Departments</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3 animate-up delay-4">
+                <div class="card shadow-sm hover-elevate h-100 text-center border-0" style="background: {% if classes_without_teacher %}#fdeaea{% else %}#eafbee{% endif %};">
+                    <div class="card-body p-4">
+                        <i class="bi bi-person-x fs-1 {% if classes_without_teacher %}text-danger{% else %}text-success{% endif %}"></i>
+                        <h2 class="mt-3 mb-0 fw-bold">{{ classes_without_teacher }}</h2>
+                        <span class="text-muted fw-semibold">Classes w/o Teacher</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-12 animate-up delay-3">
+                <h6 class="text-muted text-uppercase fw-bold small mb-3">Quick Actions</h6>
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <a href="{% url 'sis:student_create' %}" class="text-decoration-none">
+                            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background: #11998e;">
+                                <div class="card-body py-3">
+                                    <i class="bi bi-person-plus fs-3"></i>
+                                    <p class="mt-1 mb-0 fw-semibold small">Register Student</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="{% url 'sis:student_import' %}" class="text-decoration-none">
+                            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background: #22a06b;">
+                                <div class="card-body py-3">
+                                    <i class="bi bi-file-earmark-excel fs-3"></i>
+                                    <p class="mt-1 mb-0 fw-semibold small">Import from Excel</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="{% url 'sis:class_teachers_manage' %}" class="text-decoration-none">
+                            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background: #2575fc;">
+                                <div class="card-body py-3">
+                                    <i class="bi bi-person-check fs-3"></i>
+                                    <p class="mt-1 mb-0 fw-semibold small">Class Teachers</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="{% url 'sis:department_list' %}" class="text-decoration-none">
+                            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background: #f5a623;">
+                                <div class="card-body py-3">
+                                    <i class="bi bi-building fs-3"></i>
+                                    <p class="mt-1 mb-0 fw-semibold small">Departments</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-12 animate-up delay-4">
+                <h6 class="text-muted text-uppercase fw-bold small mb-3">Government Portals</h6>
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <a href="https://prems.necta.go.tz/prems/" target="_blank" rel="noopener" class="text-decoration-none">
+                            <div class="card hover-elevate shadow-sm h-100 text-center border-0" style="background: #fdf1e7;">
+                                <div class="card-body py-3">
+                                    <i class="bi bi-globe fs-3 text-danger"></i>
+                                    <p class="mt-1 mb-0 fw-bold text-dark small">NECTA PREMS</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="https://sis.tamisemi.go.tz/" target="_blank" rel="noopener" class="text-decoration-none">
+                            <div class="card hover-elevate shadow-sm h-100 text-center border-0" style="background: #eaf3fd;">
+                                <div class="card-body py-3">
+                                    <i class="bi bi-building fs-3 text-primary"></i>
+                                    <p class="mt-1 mb-0 fw-bold text-dark small">SIS TAMISEMI</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 rounded-4 animate-up delay-4">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-2">
+                <h5 class="fw-bold"><i class="bi bi-bar-chart-fill text-primary me-2"></i>Students per Class Breakdown</h5>
+            </div>
+            <div class="card-body pt-0">
+                {% for c in class_breakdown %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between fw-semibold small mb-1">
+                        <span>{{ c.name }}</span>
+                        <span class="text-primary">{{ c.student_count }} Students</span>
+                    </div>
+                    <div class="progress rounded-pill bg-light" style="height: 10px;">
+                        <div class="progress-bar rounded-pill" role="progressbar"
+                             style="width: {% widthratio c.student_count total_students 100 %}%; background: linear-gradient(90deg, #11998e, #38ef7d);">
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% elif total_income is not None %}
+        <div class="p-4 rounded-4 mb-4 text-white shadow-sm animate-up" style="background: linear-gradient(135deg, #f7971e, #ffd200);">
+            <div class="d-flex align-items-center flex-wrap">
+                <i class="bi bi-cash-coin display-3 me-3"></i>
+                <div>
+                    <h2 class="mb-1 fw-bold">Welcome, {{ user.get_full_name|default:user.username }}!</h2>
+                    <p class="mb-0 opacity-75 fs-5">Resource Manager Dashboard — finance &amp; inventory at a glance.</p>
+                </div>
+                <div class="ms-auto mt-3 mt-md-0">
+                    <span class="badge bg-white text-dark px-3 py-2 rounded-pill shadow-sm fs-6">
+                        <i class="bi bi-calendar3 me-2"></i>{% now "l, F j, Y" %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-6 col-lg-3 animate-up delay-1">
+                <div class="card shadow-sm hover-elevate h-100 text-center border-0" style="background: #eafbee;">
+                    <div class="card-body p-4">
+                        <i class="bi bi-graph-up-arrow fs-1 text-success"></i>
+                        <h2 class="mt-3 mb-0 fw-bold text-success">{{ total_income }}</h2>
+                        <span class="text-muted fw-semibold">Total Income</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3 animate-up delay-2">
+                <div class="card shadow-sm hover-elevate h-100 text-center border-0" style="background: #fdeaea;">
+                    <div class="card-body p-4">
+                        <i class="bi bi-graph-down-arrow fs-1 text-danger"></i>
+                        <h2 class="mt-3 mb-0 fw-bold text-danger">{{ total_expense }}</h2>
+                        <span class="text-muted fw-semibold">Total Expense</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3 animate-up delay-3">
+                <div class="card shadow-sm hover-elevate h-100 text-center border-0" style="background: #eef5ff;">
+                    <div class="card-body p-4">
+                        <i class="bi bi-wallet2 fs-1 text-primary"></i>
+                        <h2 class="mt-3 mb-0 fw-bold text-primary">{{ balance }}</h2>
+                        <span class="text-muted fw-semibold">Net Balance</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3 animate-up delay-4">
+                <div class="card shadow-sm hover-elevate h-100 text-center border-0" style="background: {% if low_stock_items %}#fdeaea{% else %}#eafbee{% endif %};">
+                    <div class="card-body p-4">
+                        <i class="bi bi-box-seam fs-1 {% if low_stock_items %}text-danger{% else %}text-success{% endif %}"></i>
+                        <h2 class="mt-3 mb-0 fw-bold {% if low_stock_items %}text-danger{% else %}text-success{% endif %}">{{ low_stock_items|length }}</h2>
+                        <span class="text-muted fw-semibold">Low Stock Items</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-12 animate-up delay-3">
+                <h6 class="text-muted text-uppercase fw-bold small mb-3">Quick Actions</h6>
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <a href="{% url 'resources:transaction_create' %}" class="text-decoration-none">
+                            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background: #11998e;">
+                                <div class="card-body py-3">
+                                    <i class="bi bi-plus-circle fs-3"></i>
+                                    <p class="mt-1 mb-0 fw-semibold">Add Transaction</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="{% url 'resources:invoice_list' %}" class="text-decoration-none">
+                            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background: #2575fc;">
+                                <div class="card-body py-3">
+                                    <i class="bi bi-receipt fs-3"></i>
+                                    <p class="mt-1 mb-0 fw-semibold">Invoices</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="{% url 'resources:feestructure_list' %}" class="text-decoration-none">
+                            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background: #f5a623;">
+                                <div class="card-body py-3">
+                                    <i class="bi bi-file-earmark-ruled fs-3"></i>
+                                    <p class="mt-1 mb-0 fw-semibold">Fee Structures</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="{% url 'resources:item_list' %}" class="text-decoration-none">
+                            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background: #6a11cb;">
+                                <div class="card-body py-3">
+                                    <i class="bi bi-box-seam fs-3"></i>
+                                    <p class="mt-1 mb-0 fw-semibold">Inventory</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 animate-up delay-4">
+            <div class="col-12 col-lg-7">
+                <div class="card shadow-sm border-0 rounded-4 h-100">
+                    <div class="card-header bg-white border-bottom-0 pt-4 pb-2">
+                        <h5 class="fw-bold"><i class="bi bi-clock-history text-primary me-2"></i>Recent Transactions</h5>
+                    </div>
+                    <div class="card-body pt-0">
+                        <ul class="list-group list-group-flush">
+                            {% for t in recent_transactions %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center border-light px-0 py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light p-2 rounded-3 me-3 {% if t.category.type == 'INCOME' %}text-success{% else %}text-danger{% endif %}">
+                                            <i class="bi bi-{% if t.category.type == 'INCOME' %}arrow-down-circle{% else %}arrow-up-circle{% endif %}"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold text-dark">{{ t.category.name }}</h6>
+                                            <small class="text-muted">{{ t.date }}</small>
+                                        </div>
+                                    </div>
+                                    <span class="badge {% if t.category.type == 'INCOME' %}bg-success{% else %}bg-danger{% endif %} rounded-pill px-3 py-2">
+                                        {{ t.amount }}
+                                    </span>
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item text-muted text-center py-5 border-0 bg-light rounded-4 mt-2">
+                                    No transactions recorded yet.
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-5">
+                <div class="card shadow-sm border-0 rounded-4 h-100">
+                    <div class="card-header bg-white border-bottom-0 pt-4 pb-2">
+                        <h5 class="fw-bold"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Outstanding Invoices</h5>
+                    </div>
+                    <div class="card-body pt-0">
+                        <p class="fw-bold fs-4 mb-3 text-danger">{{ total_outstanding }} <span class="fs-6 text-muted fw-normal">total owed</span></p>
+                        <ul class="list-group list-group-flush">
+                            {% for inv in unpaid_invoices|slice:":5" %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <span>{{ inv.student }}</span>
+                                    <span class="badge bg-danger rounded-pill">{{ inv.balance }}</span>
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item text-muted text-center py-4 bg-light rounded-3 border-0">
+                                    <i class="bi bi-check-circle display-6 text-success opacity-50 mb-2 d-block"></i>
+                                    All invoices settled!
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elif total_books is not None %}
+        <div class="p-4 rounded-4 mb-4 text-white shadow-sm grad-primary animate-up">
+            <div class="d-flex align-items-center flex-wrap">
+                <i class="bi bi-bookshelf display-3 me-3 text-warning"></i>
+                <div>
+                    <h2 class="mb-1 fw-bold">Welcome to the Library, {{ user.get_full_name|default:user.username }}!</h2>
+                    <p class="mb-0 opacity-75 fs-5">Manage books, members, and loans seamlessly.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-6 col-lg-3 animate-up delay-1">
+                <div class="card shadow-sm hover-elevate h-100 text-center border-0" style="background: #eef5ff;">
+                    <div class="card-body p-4">
+                        <i class="bi bi-book fs-1 text-primary"></i>
+                        <h2 class="mt-3 mb-0 fw-bold">{{ total_books }}</h2>
+                        <span class="text-muted fw-semibold">Book Titles</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3 animate-up delay-2">
+                <div class="card shadow-sm hover-elevate h-100 text-center border-0" style="background: #eafbee;">
+                    <div class="card-body p-4">
+                        <i class="bi bi-collection fs-1 text-success"></i>
+                        <h2 class="mt-3 mb-0 fw-bold">{{ available_copies }} <span class="fs-5 text-muted fw-normal">/ {{ total_copies }}</span></h2>
+                        <span class="text-muted fw-semibold">Copies Available</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3 animate-up delay-3">
+                <div class="card shadow-sm hover-elevate h-100 text-center border-0" style="background: #fff8e6;">
+                    <div class="card-body p-4">
+                        <i class="bi bi-people fs-1 text-warning"></i>
+                        <h2 class="mt-3 mb-0 fw-bold">{{ total_members }}</h2>
+                        <span class="text-muted fw-semibold">Active Members</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3 animate-up delay-4">
+                <div class="card shadow-sm hover-elevate h-100 text-center border-0" style="background: {% if overdue_loans %}#fdeaea{% else %}#eafbee{% endif %};">
+                    <div class="card-body p-4">
+                        <i class="bi bi-exclamation-triangle fs-1 {% if overdue_loans %}text-danger{% else %}text-success{% endif %}"></i>
+                        <h2 class="mt-3 mb-0 fw-bold {% if overdue_loans %}text-danger{% else %}text-success{% endif %}">{{ overdue_loans|length }}</h2>
+                        <span class="text-muted fw-semibold">Overdue Loans</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-12 animate-up delay-3">
+                <h6 class="text-muted text-uppercase fw-bold small mb-3">Library Quick Actions</h6>
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <a href="{% url 'library:loan_issue' %}" class="text-decoration-none">
+                            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background: #2575fc;">
+                                <div class="card-body py-3">
+                                    <i class="bi bi-journal-arrow-up fs-3"></i>
+                                    <p class="mt-1 mb-0 fw-semibold">Issue Book</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="{% url 'library:book_create' %}" class="text-decoration-none">
+                            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background: #22a06b;">
+                                <div class="card-body py-3">
+                                    <i class="bi bi-plus-circle fs-3"></i>
+                                    <p class="mt-1 mb-0 fw-semibold">Add Book</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="{% url 'library:member_create' %}" class="text-decoration-none">
+                            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background: #f5a623;">
+                                <div class="card-body py-3">
+                                    <i class="bi bi-person-plus fs-3"></i>
+                                    <p class="mt-1 mb-0 fw-semibold">Register Member</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a href="{% url 'library:loan_list' %}" class="text-decoration-none">
+                            <div class="card hover-elevate shadow-sm h-100 text-center border-0 text-white" style="background: #6a11cb;">
+                                <div class="card-body py-3">
+                                    <i class="bi bi-journal-check fs-3"></i>
+                                    <p class="mt-1 mb-0 fw-semibold">View All Loans</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 animate-up delay-4">
+            <div class="col-12 col-lg-7">
+                <div class="card shadow-sm border-0 rounded-4 h-100">
+                    <div class="card-header bg-white border-bottom-0 pt-4 pb-2">
+                        <h5 class="fw-bold"><i class="bi bi-clock-history text-primary me-2"></i>Recent Active Loans</h5>
+                    </div>
+                    <div class="card-body pt-0">
+                        <ul class="list-group list-group-flush">
+                            {% for loan in recent_loans %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center border-light px-0 py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light p-2 rounded-3 me-3 text-primary"><i class="bi bi-book"></i></div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold text-dark">{{ loan.book_copy }}</h6>
+                                            <small class="text-muted">Borrowed by: {{ loan.member }}</small>
+                                        </div>
+                                    </div>
+                                    {% if loan.is_overdue %}
+                                        <span class="badge bg-danger rounded-pill px-3 py-2">Overdue</span>
+                                    {% else %}
+                                        <span class="badge bg-success rounded-pill px-3 py-2">Due: {{ loan.due_date|date:"M d" }}</span>
+                                    {% endif %}
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item text-muted text-center py-5 border-0 bg-light rounded-4 mt-2">
+                                    <i class="bi bi-check-circle display-4 text-success opacity-50 mb-3 d-block"></i>
+                                    No active loans right now. All books are accounted for!
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-5">
+                <div class="card shadow-sm border-0 rounded-4 h-100 bg-primary bg-opacity-10 text-primary">
+                    <div class="card-body text-center d-flex flex-column justify-content-center p-5">
+                        <i class="bi bi-shield-check display-1 mb-3"></i>
+                        <h4 class="fw-bold">Library Secure</h4>
+                        <p class="mb-0">Everything looks organized! Use the quick action buttons to manage daily library operations seamlessly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% elif student_profile %}
+        <div class="row justify-content-center animate-up">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="card shadow-sm border-0 rounded-4 text-center mt-5 hover-elevate">
+                    <div class="card-header border-0 bg-transparent pt-5 pb-0">
+                        <div class="d-inline-block bg-primary bg-opacity-10 text-primary p-4 rounded-circle mb-3">
+                            <i class="bi bi-person-bounding-box display-4"></i>
+                        </div>
+                        <h2 class="fw-bold">{{ student_profile }}</h2>
+                    </div>
+                    <div class="card-body pb-5">
+                        <div class="d-flex justify-content-center gap-4 mt-3">
+                            <div>
+                                <p class="text-muted text-uppercase small mb-1 fw-bold">Stream</p>
+                                <h5><span class="badge bg-dark text-white px-3 py-2">{{ student_profile.stream|default:"Not assigned" }}</span></h5>
+                            </div>
+                            <div>
+                                <p class="text-muted text-uppercase small mb-1 fw-bold">Status</p>
+                                <h5><span class="badge bg-success px-3 py-2">{{ student_profile.get_status_display }}</span></h5>
+                            </div>
+                        </div>
+                        <hr class="my-4 w-75 mx-auto border-light">
+                        <p class="text-muted">Welcome to your student portal. Your academic records and updates will appear here soon.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="text-center py-5 mt-5 animate-up">
+            <i class="bi bi-tools display-1 text-muted opacity-25 mb-4 d-block"></i>
+            <h3 class="fw-bold text-dark">Dashboard Under Construction</h3>
+            <p class="text-muted fs-5">Your personalized dashboard modules are currently being configured.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}{% if fee_structure %}Edit{% else %}Add{% endif %} Fee Structure - School App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h4 class="mb-0">{% if fee_structure %}Edit Fee Structure{% else %}Add Fee Structure{% endif %}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Class</label>
+                        {{ form.school_class }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Academic Year</label>
+                        {{ form.academic_year }}
+                    </div>
+                                        <div class="mb-3">
+                        <label class="form-label">Semester</label>
+                        {{ form.semester }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Term / Installment (optional)</label>
+                        {{ form.term }}
+                        <small class="text-muted d-block mt-1">Choose an installment (e.g. "Term 1") for a half-semester payment, or leave blank for the full semester amount.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Amount</label>
+                        {{ form.amount }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="{% url 'resources:feestructure_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

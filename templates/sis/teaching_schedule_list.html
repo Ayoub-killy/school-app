@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Teaching Schedule - School App{% endblock %}
+{% block content %}
+<h3 class="mb-3">My Weekly Teaching Schedule</h3>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">Add Schedule Entry</div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Class / Stream</label>
+                        {{ form.stream }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Subject</label>
+                        {{ form.subject }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Day</label>
+                        {{ form.day }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Start Time</label>
+                        {{ form.start_time }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">End Time</label>
+                        {{ form.end_time }}
+                    </div>
+                    {% if form.non_field_errors %}
+                        <div class="text-danger small mb-2">{{ form.non_field_errors.0 }}</div>
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary w-100">Add to Schedule</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        {% for day, entries in schedule_by_day.items %}
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-white fw-bold">
+                {% if day == 'MON' %}Monday{% elif day == 'TUE' %}Tuesday{% elif day == 'WED' %}Wednesday
+                {% elif day == 'THU' %}Thursday{% elif day == 'FRI' %}Friday{% else %}Saturday{% endif %}
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <tbody>
+                        {% for entry in entries %}
+                        <tr>
+                            <td style="width:120px;">{{ entry.start_time|time:"H:i" }} - {{ entry.end_time|time:"H:i" }}</td>
+                            <td>{{ entry.subject }}</td>
+                            <td>{{ entry.stream }}</td>
+                            <td style="width:50px;">
+                                <a href="{% url 'sis:teaching_schedule_delete' entry.pk %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td class="text-muted text-center py-3">No classes scheduled.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Staff - School App{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Staff</h3>
+    <a href="{% url 'accounts:staff_invite' %}" class="btn btn-primary">
+        <i class="bi bi-person-plus"></i> Invite New Staff
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Photo</th>
+                    <th>Staff No.</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Department</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for staff in staff_members %}
+                                <tr>
+                    <td>
+                        {% if staff.photo %}
+                            <img src="{{ staff.photo.url }}" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                        {% else %}
+                            <i class="bi bi-person-circle fs-3 text-muted"></i>
+                        {% endif %}
+                    </td>
+                    <td>{{ staff.staff_number }}</td>
+                    <td>{{ staff.user.get_full_name }}</td>
+                    <td>{{ staff.user.get_role_display }}</td>
+                    <td>{{ staff.department|default:"—" }}</td>
+                    <td>{{ staff.phone_number|default:"—" }}</td>
+                    <td>
+                        <a href="{% url 'sis:staff_update' staff.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                                                <a href="{% url 'sis:staff_detail' staff.pk %}" class="btn btn-sm btn-outline-success">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="{% url 'sis:staff_delete' staff.pk %}" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">No staff registered yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

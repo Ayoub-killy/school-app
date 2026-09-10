@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Generate Report - School App{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white"><i class="bi bi-file-earmark-pdf me-1"></i> Generate Department Report</div>
+            <div class="card-body">
+                <p>This will generate a PDF report titled <strong>"REPORT FROM {{ department.name|upper }}"</strong>, including your demands, inventory records, and financial summary.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-check mb-3">
+                        <input type="checkbox" name="send_to_head" value="1" class="form-check-input" id="sendHead" checked>
+                        <label class="form-check-label" for="sendHead">Send this report to the Head of School</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-file-earmark-pdf me-1"></i> Generate PDF</button>
+                    <a href="{% url 'resources:department_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Leavers / Alumni - School App{% endblock %}
+
+{% block content %}
+<h3 class="mb-4">Leavers / Alumni - Select Year</h3>
+
+<div class="row g-3">
+    {% for year in years %}
+    <div class="col-6 col-md-4 col-lg-3">
+        <a href="{% url 'sis:leavers_year_detail' year %}" class="text-decoration-none">
+            <div class="card shadow-sm h-100 text-center">
+                <div class="card-body">
+                    <i class="bi bi-calendar-event fs-1 text-primary"></i>
+                    <h5 class="card-title mt-2">{{ year }}</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p class="text-muted">No leavers recorded yet.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

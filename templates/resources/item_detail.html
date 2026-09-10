@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}{{ item.name }} - School App{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-5">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">{{ item.name }}</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Category:</strong> {{ item.category|default:"—" }}</p>
+                <p><strong>Unit:</strong> {{ item.unit }}</p>
+                <p><strong>Current Stock:</strong> {{ item.current_stock }}
+                    {% if item.is_low_stock %}
+                        <span class="badge text-bg-warning"><i class="bi bi-exclamation-triangle"></i> Low Stock</span>
+                    {% endif %}
+                </p>
+                <p><strong>Reorder Level:</strong> {{ item.reorder_level }}</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header">Record Stock Movement</div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Type</label>
+                        {{ form.movement_type }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Quantity</label>
+                        {{ form.quantity }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Date</label>
+                        {{ form.date }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Reason</label>
+                        {{ form.reason }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Record Movement</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card shadow-sm">
+            <div class="card-header">Movement History</div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Quantity</th>
+                            <th>Reason</th>
+                            <th>Recorded By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in movements %}
+                        <tr>
+                            <td>{{ m.date }}</td>
+                            <td>
+                                <span class="badge text-bg-{% if m.movement_type == 'IN' %}success{% else %}danger{% endif %}">
+                                    {{ m.get_movement_type_display }}
+                                </span>
+                            </td>
+                            <td>{{ m.quantity }}</td>
+                            <td>{{ m.reason|default:"—" }}</td>
+                            <td>{{ m.recorded_by|default:"—" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">No movements recorded yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

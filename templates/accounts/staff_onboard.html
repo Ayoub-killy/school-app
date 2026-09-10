@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %}Complete Your Profile - School App{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h4 class="mb-0">Welcome! Complete Your Profile</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    You've been registered as <strong>{{ invitation.get_role_display }}</strong>
+                    {% if invitation.department %}in the <strong>{{ invitation.department }}</strong> department{% endif %}.
+                    Please confirm this is correct as you complete your profile below. If anything looks wrong,
+                    contact your administrator before proceeding.
+                </div>
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">{{ form.non_field_errors.0 }}</div>
+                {% endif %}
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Gender</label>
+                            {{ form.gender }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Phone Number</label>
+                            {{ form.phone_number }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Date of Birth</label>
+                            {{ form.date_of_birth }}
+                            <div class="form-text text-warning">
+                                <i class="bi bi-shield-lock"></i> {{ form.date_of_birth.help_text }}
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label">Home Address</label>
+                            {{ form.address }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Photo</label>
+                            {{ form.photo }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Password</label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                                <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Confirm Password</label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-12">
+                            <button type="button" id="gen-password-btn" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-magic"></i> Generate a Password for Me
+                            </button>
+                            <span id="gen-password-note" class="text-success small ms-2"></span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">Complete Profile &amp; Log In</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.getElementById('gen-password-btn').addEventListener('click', function () {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%';
+    let pwd = '';
+    const arr = new Uint32Array(12);
+    window.crypto.getRandomValues(arr);
+    for (let i = 0; i < 12; i++) {
+        pwd += chars[arr[i] % chars.length];
+    }
+    const p1 = document.getElementById('id_password1');
+    const p2 = document.getElementById('id_password2');
+    p1.type = 'text';
+    p2.type = 'text';
+    p1.value = pwd;
+    p2.value = pwd;
+    document.getElementById('gen-password-note').textContent =
+        'Generated: ' + pwd + ' (make sure to save this somewhere safe)';
+});
+</script>
+{% endblock %}

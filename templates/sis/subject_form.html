@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}{% if subject %}Edit{% else %}Add{% endif %} Subject - School App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h4 class="mb-0">{% if subject %}Edit Subject{% else %}Add Subject{% endif %}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        {{ form.name }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Code (numeric)</label>
+                        {{ form.code }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Department</label>
+                        {{ form.department }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Levels</label>
+                        {{ form.levels }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Teachers (hold Ctrl/Cmd to select multiple)</label>
+                        {{ form.teachers }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="{% url 'sis:subject_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
