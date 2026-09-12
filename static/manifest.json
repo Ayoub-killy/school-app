@@ -1,0 +1,23 @@
+{
+  "name": "School Management App",
+  "short_name": "SMA",
+  "description": "Manage students, staff, library, and resources.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4338ca",
+  "icons": [
+    {
+      "src": "/static/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

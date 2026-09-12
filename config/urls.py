@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from apps.core.views import service_worker, offline_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,7 +26,9 @@ urlpatterns = [
     path('sis/', include('apps.sis.urls')),
     path('resources/', include('apps.resources.urls')),
     path('library/', include('apps.library.urls')),
-       path('', include('apps.dashboard.urls')),
+    path('', include('apps.dashboard.urls')),
+    path('service-worker.js', service_worker, name='service_worker'),
+    path('offline/', offline_view, name='offline'),
 ]
 
 if settings.DEBUG:
