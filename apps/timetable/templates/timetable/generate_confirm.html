@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Generate Timetable - School App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm border-warning">
+            <div class="card-header bg-warning">
+                <h4 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Generate New Timetable</h4>
+            </div>
+            <div class="card-body">
+                {% if active %}
+                <div class="alert alert-danger">
+                    A timetable is already active (generated {{ active.generated_at|date:"d M Y, H:i" }}
+                    by {{ active.generated_by.get_full_name|default:active.generated_by.username }}).
+                    <strong>It will be permanently deleted</strong> and replaced by a brand new,
+                    randomly arranged timetable.
+                </div>
+                {% else %}
+                <p class="text-muted">No timetable exists yet. This will create the first one.</p>
+                {% endif %}
+
+                <ul class="mb-4">
+                    <li>Periods will be shuffled randomly across all streams.</li>
+                    <li>Every teacher's personal teaching schedule will be rebuilt from the result.</li>
+                    <li>Every teacher will be emailed their new schedule automatically.</li>
+                </ul>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-shuffle"></i> Yes, generate new timetable
+                    </button>
+                    <a href="{% url 'timetable:assignment_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

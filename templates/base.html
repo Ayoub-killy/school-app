@@ -235,9 +235,19 @@
                                     <i class="bi bi-book me-2"></i> Subjects
                                 </a>
                             </li>
-                            <li class="nav-item">
+                                                        <li class="nav-item">
                                 <a class="nav-link text-white" href="{% url 'sis:department_list' %}">
                                     <i class="bi bi-building me-2"></i> Departments
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'timetable:assignment_list' %}">
+                                    <i class="bi bi-person-video3 me-2"></i> Subject-Teacher Assignments
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'timetable:view' %}">
+                                    <i class="bi bi-calendar3 me-2"></i> Teaching Timetable
                                 </a>
                             </li>
                         </ul>

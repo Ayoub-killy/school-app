@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('apps.accounts.urls')),
     path('sis/', include('apps.sis.urls')),
+    path('timetable/', include('apps.timetable.urls')),
     path('resources/', include('apps.resources.urls')),
     path('library/', include('apps.library.urls')),
     path('', include('apps.dashboard.urls')),

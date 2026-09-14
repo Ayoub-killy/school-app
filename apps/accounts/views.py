@@ -102,12 +102,23 @@ class CustomLoginView(LoginView):
     authentication_form = StyledAuthenticationForm
     redirect_authenticated_user = True
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from apps.sis.models import Student, Staff, SchoolClass
+        from apps.library.models import Book
+
+        context['stat_students'] = Student.objects.filter(status='ACTIVE').count()
+        context['stat_staff'] = Staff.objects.filter(is_active=True).count()
+        context['stat_classes'] = SchoolClass.objects.count()
+        context['stat_books'] = Book.objects.count()
+        return context
+
     def form_valid(self, form):
         response = super().form_valid(form)
         self.request.session['active_role'] = form.cleaned_data['role']
         response.set_cookie('returning_user', '1', max_age=60 * 60 * 24 * 365)
         return response
-
+    
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404

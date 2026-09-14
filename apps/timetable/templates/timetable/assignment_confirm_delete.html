@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Delete Assignment - School App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Delete Assignment</h4>
+            </div>
+            <div class="card-body">
+                <p>Remove <strong>{{ assignment.subject }}</strong> for <strong>{{ assignment.stream }}</strong>
+                   (currently taught by {{ assignment.teacher.get_full_name|default:assignment.teacher.username }})?</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Yes, delete</button>
+                    <a href="{% url 'timetable:assignment_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

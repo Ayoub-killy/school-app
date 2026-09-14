@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.core',
     'apps.sis',
+    'apps.timetable',
     'apps.library',
     'apps.resources',
     'apps.dashboard',

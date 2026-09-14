@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load timetable_extras %}
+{% block title %}Teaching Timetable - School App{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Teaching Timetable</h3>
+    <div>
+        <a href="{% url 'timetable:pdf' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-file-earmark-pdf"></i> Download PDF (all streams)
+        </a>
+        <a href="{% url 'timetable:generate' %}" class="btn btn-success">
+            <i class="bi bi-shuffle"></i> Regenerate
+        </a>
+    </div>
+</div>
+
+<form method="get" class="mb-3" style="max-width: 320px;">
+    <select name="stream" class="form-select" onchange="this.form.submit()">
+        {% for stream in streams %}
+        <option value="{{ stream.pk }}" {% if selected_stream.pk == stream.pk %}selected{% endif %}>
+            {{ stream }}
+        </option>
+        {% endfor %}
+    </select>
+</form>
+
+{% if selected_stream %}
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-bordered mb-0 text-center align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Period</th>
+                    {% for day_code, day_label in days %}
+                    <th>{{ day_label }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for period in periods %}
+                <tr>
+                    <th class="table-light">
+                        {{ period.label }}<br>
+                        <small class="text-muted">{{ period.start_time|time:"H:i" }}-{{ period.end_time|time:"H:i" }}</small>
+                    </th>
+                    {% for day_code, day_label in days %}
+                    <td>
+                        {% with entry=grid|get_item:day_code|get_item:period.id %}
+                        {% if entry %}
+                            <div class="fw-semibold">{{ entry.subject.name }}</div>
+                            <small class="text-muted">{{ entry.teacher.get_full_name|default:entry.teacher.username }}</small>
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                        {% endwith %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<p class="text-muted">No streams found.</p>
+{% endif %}
+{% endblock %}
