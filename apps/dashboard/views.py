@@ -36,9 +36,23 @@ def home(request):
     role = active_role
 
     if role in (User.Role.HEAD_OF_SCHOOL, User.Role.ADMIN):
+        from apps.library.models import Book, Loan
+        from apps.accounts.models import StaffInvitation
+        from apps.resources.models import Transaction
+
         context['total_students'] = Student.objects.filter(status='ACTIVE').count()
         context['total_staff'] = Staff.objects.filter(is_active=True).count()
         context['total_classes'] = SchoolClass.objects.count()
+        context['total_books'] = Book.objects.count()
+        context['pending_invitations'] = StaffInvitation.objects.filter(is_used=False).count()
+
+        open_loans = Loan.objects.filter(returned_date__isnull=True)
+        context['overdue_loans'] = sum(1 for loan in open_loans if loan.is_overdue())
+
+        transactions = Transaction.objects.select_related('category').all()
+        income = sum(t.amount for t in transactions if t.category.type == 'INCOME')
+        expense = sum(t.amount for t in transactions if t.category.type == 'EXPENSE')
+        context['balance'] = income - expense
 
     elif role == User.Role.TEACHER:
         context['subjects'] = request.user.subjects_taught.all()

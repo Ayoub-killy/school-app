@@ -50,6 +50,67 @@
             </div>
         </div>
 
+        <div class="row g-3 mb-5">
+            <div class="col-6 col-md-3 animate-up delay-1">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center py-3">
+                        <i class="bi bi-book-half text-primary fs-3"></i>
+                        <h4 class="fw-bold mb-0 mt-1">{{ total_books }}</h4>
+                        <small class="text-muted">Library Books</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 animate-up delay-2">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center py-3">
+                        <i class="bi bi-exclamation-triangle text-danger fs-3"></i>
+                        <h4 class="fw-bold mb-0 mt-1">{{ overdue_loans }}</h4>
+                        <small class="text-muted">Overdue Loans</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 animate-up delay-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center py-3">
+                        <i class="bi bi-envelope-check text-warning fs-3"></i>
+                        <h4 class="fw-bold mb-0 mt-1">{{ pending_invitations }}</h4>
+                        <small class="text-muted">Pending Invitations</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 animate-up delay-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center py-3">
+                        <i class="bi bi-wallet2 {% if balance >= 0 %}text-success{% else %}text-danger{% endif %} fs-3"></i>
+                        <h4 class="fw-bold mb-0 mt-1 {% if balance >= 0 %}text-success{% else %}text-danger{% endif %}">{{ balance }}</h4>
+                        <small class="text-muted">Balance</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="fw-bold text-dark mb-3 animate-up delay-2"><i class="bi bi-lightning-charge-fill text-warning me-2"></i>Quick Actions</h5>
+        <div class="d-flex flex-wrap gap-2 mb-5 animate-up delay-3">
+            <a href="{% url 'sis:student_create' %}" class="btn btn-outline-primary">
+                <i class="bi bi-person-plus me-1"></i> Register Student
+            </a>
+            <a href="{% url 'accounts:staff_invite' %}" class="btn btn-outline-primary">
+                <i class="bi bi-person-badge me-1"></i> Invite Staff
+            </a>
+            <a href="{% url 'library:book_create' %}" class="btn btn-outline-success">
+                <i class="bi bi-journal-plus me-1"></i> Add Book
+            </a>
+            <a href="{% url 'library:loan_issue' %}" class="btn btn-outline-success">
+                <i class="bi bi-arrow-left-right me-1"></i> Issue Loan
+            </a>
+            <a href="{% url 'resources:transaction_create' %}" class="btn btn-outline-danger">
+                <i class="bi bi-cash-coin me-1"></i> Record Transaction
+            </a>
+            <a href="{% url 'resources:department_comparison' %}" class="btn btn-outline-danger">
+                <i class="bi bi-bar-chart-line me-1"></i> Department Comparison
+            </a>
+        </div>
+
         <h5 class="fw-bold text-dark mb-3 animate-up delay-3"><i class="bi bi-grid-1x2-fill text-primary me-2"></i>School Management Modules</h5>
         <div class="row g-4 animate-up delay-4">
             <div class="col-12 col-sm-6 col-lg-4">

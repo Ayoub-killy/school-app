@@ -4,7 +4,7 @@ import string
 from django import forms
 from django.contrib.auth import password_validation
 
-from .models import User, StaffInvitation
+from .models import User, StaffInvitation, UserRole
 from apps.sis.models import Department, Staff
 
 
@@ -73,3 +73,13 @@ def generate_username(first_name, last_name):
 def generate_temp_token_password(length=12):
     alphabet = string.ascii_letters + string.digits
     return ''.join(secrets.choice(alphabet) for _ in range(length))
+
+class UserRoleForm(forms.ModelForm):
+    class Meta:
+        model = UserRole
+        fields = ['role', 'department']
+        widgets = {
+            'role': forms.Select(attrs={'class': 'form-select'}),
+            'department': forms.Select(attrs={'class': 'form-select'}),
+        }
+        

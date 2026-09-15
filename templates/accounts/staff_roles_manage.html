@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Manage Roles - {{ staff_user.get_full_name }} - School App{% endblock %}
+{% block content %}
+<h3 class="mb-1">Manage Roles</h3>
+<p class="text-muted mb-4">
+    {{ staff_user.get_full_name|default:staff_user.username }} ({{ staff_user.email }})
+</p>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">Current Roles</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                        <span class="badge text-bg-primary me-2">Primary</span>
+                        {{ staff_user.get_role_display }}
+                    </span>
+                </li>
+                {% for extra in extra_roles %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                        <span class="badge text-bg-secondary me-2">Extra</span>
+                        {{ extra.get_role_display }}
+                        {% if extra.department %} — {{ extra.department }}{% endif %}
+                    </span>
+                    <form method="post" action="{% url 'accounts:staff_role_remove' extra.pk %}" class="mb-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </li>
+                {% empty %}
+                <li class="list-group-item text-muted">No extra roles assigned yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">Add a Role</div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        {{ form.role }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Department (optional)</label>
+                        {{ form.department }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Role</button>
+                    <a href="{% url 'sis:staff_list' %}" class="btn btn-outline-secondary">Back to Staff</a>
+                </form>
+            </div>
+        </div>
+        <div class="alert alert-info mt-3 small">
+            <i class="bi bi-info-circle me-1"></i>
+            This staff member can log in with their existing email and password, and simply choose
+            the relevant role from the "Login as" dropdown each time.
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -115,7 +115,9 @@ class CustomLoginView(LoginView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        self.request.session['active_role'] = form.cleaned_data['role']
+        role = form.cleaned_data['role']
+        self.request.session['active_role'] = role
+        self.request.session['active_role_display'] = dict(User.Role.choices).get(role, role)
         response.set_cookie('returning_user', '1', max_age=60 * 60 * 24 * 365)
         return response
     
@@ -128,8 +130,8 @@ from django.conf import settings
 
 from apps.core.decorators import role_required
 from apps.sis.models import Staff
-from .forms import StaffInvitationForm, StaffOnboardingForm, generate_username
-from .models import StaffInvitation
+from .forms import StaffInvitationForm, StaffOnboardingForm, UserRoleForm, generate_username
+from .models import StaffInvitation, UserRole
 
 
 @login_required
@@ -213,3 +215,47 @@ def staff_onboard(request, token):
         form = StaffOnboardingForm()
 
     return render(request, 'accounts/staff_onboard.html', {'form': form, 'invitation': invitation})
+
+@login_required
+@role_required('HEAD_OF_SCHOOL', 'ADMIN')
+def staff_roles_manage(request, user_id):
+    staff_user = get_object_or_404(User, pk=user_id)
+    extra_roles = staff_user.extra_roles.select_related('department').all()
+
+    if request.method == 'POST':
+        form = UserRoleForm(request.POST)
+        if form.is_valid():
+            role = form.cleaned_data['role']
+            if role == staff_user.role:
+                messages.error(
+                    request,
+                    f"{staff_user.get_full_name() or staff_user.username} already has "
+                    f"{staff_user.get_role_display()} as their primary role."
+                )
+            elif staff_user.extra_roles.filter(role=role).exists():
+                messages.error(request, "This role is already assigned to this user.")
+            else:
+                extra = form.save(commit=False)
+                extra.user = staff_user
+                extra.save()
+                messages.success(request, 'Role added successfully.')
+            return redirect('accounts:staff_roles_manage', user_id=user_id)
+    else:
+        form = UserRoleForm()
+
+    return render(request, 'accounts/staff_roles_manage.html', {
+        'staff_user': staff_user,
+        'extra_roles': extra_roles,
+        'form': form,
+    })
+
+
+@login_required
+@role_required('HEAD_OF_SCHOOL', 'ADMIN')
+def staff_role_remove(request, pk):
+    extra_role = get_object_or_404(UserRole, pk=pk)
+    user_id = extra_role.user_id
+    if request.method == 'POST':
+        extra_role.delete()
+        messages.success(request, 'Role removed.')
+    return redirect('accounts:staff_roles_manage', user_id=user_id)

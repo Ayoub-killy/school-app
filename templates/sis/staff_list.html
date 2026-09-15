@@ -45,6 +45,9 @@
                                                 <a href="{% url 'sis:staff_detail' staff.pk %}" class="btn btn-sm btn-outline-success">
                             <i class="bi bi-eye"></i>
                         </a>
+                        <a href="{% url 'accounts:staff_roles_manage' staff.user.pk %}" class="btn btn-sm btn-outline-warning">
+                            <i class="bi bi-person-badge"></i>
+                        </a>
                         <a href="{% url 'sis:staff_delete' staff.pk %}" class="btn btn-sm btn-outline-danger">
                             <i class="bi bi-trash"></i>
                         </a>

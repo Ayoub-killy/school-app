@@ -11,4 +11,6 @@ urlpatterns = [
     path('staff/invite/', views.staff_invite, name='staff_invite'),
     path('staff/invitations/', views.staff_invitations, name='staff_invitations'),
     path('staff/onboard/<str:token>/', views.staff_onboard, name='staff_onboard'),
+    path('staff/<int:user_id>/roles/', views.staff_roles_manage, name='staff_roles_manage'),
+    path('staff/roles/<int:pk>/remove/', views.staff_role_remove, name='staff_role_remove'),
 ]
