@@ -25,7 +25,12 @@ class StyledAuthenticationForm(AuthenticationForm):
         self.fields['password'].widget.attrs.update({'class': 'form-control'})
 
     def _client_ip(self):
-        return self.request.META.get('REMOTE_ADDR') if self.request else None
+        if not self.request:
+            return None
+        xff = self.request.META.get('HTTP_X_FORWARDED_FOR')
+        if xff:
+            return xff.split(',')[0].strip()
+        return self.request.META.get('REMOTE_ADDR') or None
 
     def _is_locked(self):
         ip = self._client_ip()
@@ -80,18 +85,20 @@ class StyledAuthenticationForm(AuthenticationForm):
             raise
 
         role = cleaned_data.get('role')
-        if self.user_cache and role:
-            if not self.user_cache.has_role(role):
-                result = self._register_failure()
-                if result and result[0] == 'locked':
-                    raise forms.ValidationError(
-                        f"Too many failed login attempts (3/3). This device is now locked for {LOCKOUT_MINUTES} minutes."
-                    )
-                elif result:
-                    raise forms.ValidationError(
-                        f"You are not assigned that role on this account. "
-                        f"You have {result[1]} attempt(s) left before this device is locked."
-                    )
+        if self.user_cache and role and not self.user_cache.has_role(role):
+            result = self._register_failure()
+            if result and result[0] == 'locked':
+                raise forms.ValidationError(
+                    f"Too many failed login attempts (3/3). This device is now locked for {LOCKOUT_MINUTES} minutes."
+                )
+            elif result:
+                raise forms.ValidationError(
+                    f"You are not assigned that role on this account. "
+                    f"You have {result[1]} attempt(s) left before this device is locked."
+                )
+            raise forms.ValidationError(
+                "You are not assigned that role on this account."
+            )
 
         self._clear_failures()
         return cleaned_data

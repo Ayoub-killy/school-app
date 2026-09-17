@@ -36,7 +36,6 @@ def home(request):
     role = active_role
 
     if role in (User.Role.HEAD_OF_SCHOOL, User.Role.ADMIN):
-        from apps.library.models import Book, Loan
         from apps.accounts.models import StaffInvitation
         from apps.resources.models import Transaction
 
